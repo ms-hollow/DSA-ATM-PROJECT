@@ -108,9 +108,9 @@ void atmClass::insertcard(){
             cout<<"\nCONTACT NUMBER: ";cin>>ac.contactnumber;    
             cout<<"\nENTER AMOUNT: ";cin>>amount;
             
-            while(amount>20000){
+            while(amount<500 || amount>20000 ){
             system("cls");
-            cout<<"\nATM ONLY ACCEPTS P 20,000 PER DEPOSIT";
+            cout<<"\nATM ONLY ACCEPTS MINIMUM OF 500 PESOS AND MAXIMUM OF 20,000 PESOS PER DEPOSIT";
             cout<<"\nEnter Initial Amount: ";
             cin>>amount;
             }
@@ -141,7 +141,6 @@ void atmClass::insertcard(){
         }
         cout<<"\nACCOUNT SUCCESSFULLY LOG IN\n";
     }
-    menu();
 }
 
 void atmClass::removecard(){
@@ -159,8 +158,8 @@ void atmClass::saving_pin(){
     fstream fp;
     NODE *p;
     fp.open("pinrecord.txt", ios::out); 
+    fp <<accnum<<'\n';
     fp <<pin <<'\n';
-    fp <<accnum;
     fp.close();
 }
 
@@ -168,8 +167,8 @@ void atmClass::retrieve_pin(){
     fstream fp;
     fp.open("pinrecord.txt", ios::in);
     while(!fp.eof()){
-        fp >>pin;
         fp >>accnum;
+        fp >>pin;
     }
     fp.close();
 }
@@ -268,10 +267,7 @@ void atmClass::balance_inquiry(){
     string input;
     char ans;
 
-    cout<<"\nENTER PIN: "; pincode();
     while(input!=pin){
-        system("cls");
-        cout<<"\nLOG IN";
         system("cls");
         cout<<"\nENTER PIN: ";
         pincode();
@@ -279,7 +275,6 @@ void atmClass::balance_inquiry(){
         retrieve_pin();
         decrypt();
     }
-
     cout<<"\nBALANCE INQUIRY";
     cout<<"\nACCOUNT NUMBER: "<<p->user.acc_number;
     cout<<"\nYOUR BALANCE IS: "<<p->user.balance;
