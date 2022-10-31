@@ -21,6 +21,7 @@ typedef struct node{
 class atmClass{
     private:
         NODE *n;
+        INFO user;
         char pin[7];
         int i, accnum;
         void encrypt();
@@ -65,17 +66,12 @@ void atmClass::add(INFO user){
     temp->user.name = user.name;
     temp->user.acc_number = user.acc_number;
     temp->user.balance = user.balance;
-    if (p==n)
-        n = temp;
-    else
-        q->next = temp;
     temp->next = p;
 }
 
 
 void atmClass::insertcard(){
 
-    INFO ac;
     fstream fp;
     string input, checker;
     int ch, amount;
@@ -91,7 +87,7 @@ void atmClass::insertcard(){
     getline(fp,checker);
     srand(time(NULL));
     accnum = (rand()%(999999)+10000);
-    ac.acc_number = accnum;
+    user.acc_number = accnum;
 
     if(checker.length()==0){
         cout<<"\nYOUR ACCOUNT IS NOT REGISTER\n";
@@ -102,10 +98,10 @@ void atmClass::insertcard(){
     switch (ch){
     case 1: system("cls");
             cout<<"\nREGISTRATION";
-            cout<<"\nACCOUNT NUMBER: "<<ac.acc_number;
-            cout<<"\nNAME: "; cin.ignore(); getline(cin,ac.name);
-            cout<<"\nBIRTHDAY: ";cin.ignore(); getline(cin,ac.birthday);
-            cout<<"\nCONTACT NUMBER: ";cin>>ac.contactnumber;    
+            cout<<"\nACCOUNT NUMBER: "<<user.acc_number;
+            cout<<"\nNAME: "; cin.ignore(); getline(cin,user.name);
+            cout<<"\nBIRTHDAY: ";cin.ignore(); getline(cin,user.birthday);
+            cout<<"\nCONTACT NUMBER: ";cin>>user.contactnumber;    
             cout<<"\nENTER AMOUNT: ";cin>>amount;
             
             while(amount<500 || amount>20000 ){
@@ -114,18 +110,18 @@ void atmClass::insertcard(){
             cout<<"\nEnter Initial Amount: ";
             cin>>amount;
             }
-            ac.balance = amount;
-            cout<<"PIN: "; pincode(); encrypt(); saving_pin();
+            user.balance = amount;
+            cout<<"PIN: "; pincode();
             system("cls");
 
             cout<<"\nACCOUNT IS NOW REGISTERED";
             cout<<"\n=========================\n";
-            cout<<"\nACCOUNT NUMBER: "<<ac.acc_number;
-            cout<<"\nNAME: "<<ac.name;
-            cout<<"\nBIRTHDAY: "<<ac.birthday;
-            cout<<"\nCONTACT NUMBER: "<<ac.contactnumber;
-            cout<<"\nACCOUNT BALANCE: "<<ac.balance;
-            save(); add(ac); system("pause"); break;
+            cout<<"\nACCOUNT NUMBER: "<<user.acc_number;
+            cout<<"\nNAME: "<<user.name;
+            cout<<"\nBIRTHDAY: "<<user.birthday;
+            cout<<"\nCONTACT NUMBER: "<<user.contactnumber;
+            cout<<"\nACCOUNT BALANCE: "<<user.balance;
+            save(); encrypt(); saving_pin(); add(user); system("pause"); break;
     case 2: removecard(); exit(0); break; } 
     }  
     else{
@@ -156,11 +152,22 @@ void atmClass::removecard(){
 
 void atmClass::saving_pin(){
     fstream fp;
-    NODE *p;
     fp.open("pinrecord.txt", ios::out); 
     fp <<accnum<<'\n';
     fp <<pin <<'\n';
     fp.close();
+}
+
+void atmClass::save(){
+    fstream accoutInfos;
+    accoutInfos.open("userdata.txt",ios::out);
+    accoutInfos<<user.name<<endl;
+    accoutInfos<<user.acc_number<<'\n';
+    accoutInfos<<user.birthday<<'\n';
+    accoutInfos<<user.contactnumber<<'\n';
+    accoutInfos<<user.balance<<'\n';
+    cout<<"\nACCOUNT SUCCESSFULLY SAVED!";
+    accoutInfos.close();
 }
 
 void atmClass::retrieve_pin(){
@@ -210,20 +217,6 @@ while(pin[i]!='\0'){
     pin[i]=pin[i] - 70;
     i++;
     }
-}
-
-void atmClass::save(){
-
-    INFO user;
-    fstream accoutInfos;
-    accoutInfos.open("userdata.txt",ios::out);
-    accoutInfos<<user.name<<endl;
-    accoutInfos<<user.acc_number<<'\n';
-    accoutInfos<<user.birthday<<'\n';
-    accoutInfos<<user.contactnumber<<'\n';
-    accoutInfos<<user.balance<<'\n';
-    cout<<"\nACCOUNT SUCCESSFULLY SAVED!";
-    accoutInfos.close();
 }
 
 void atmClass::retrieve(){
