@@ -33,10 +33,12 @@ class atmClass{
         void insertcard();
         void removecard();
         void reg_acc();
-        void save();
-        void retrieve();
+        void save_acc();
+        void retrieve_acc();
         void saving_pin();
         void retrieve_pin();
+        void save_datalist();
+        void retrieve_datalist();
         void balance_inquiry();
 };
 
@@ -66,6 +68,15 @@ void atmClass::add(INFO user){
     temp->user.name = user.name;
     temp->user.acc_number = user.acc_number;
     temp->user.balance = user.balance;
+    temp->next = p;
+    while(p!=NULL){
+        q = p;
+        p = p->next;
+    }
+    if (p==n)
+        n = temp;
+    else
+        q->next = temp;
     temp->next = p;
 }
 
@@ -121,7 +132,7 @@ void atmClass::insertcard(){
             cout<<"\nBIRTHDAY: "<<user.birthday;
             cout<<"\nCONTACT NUMBER: "<<user.contactnumber;
             cout<<"\nACCOUNT BALANCE: "<<user.balance;
-            save(); encrypt(); saving_pin(); add(user); system("pause"); break;
+            save_acc(); encrypt(); saving_pin(); add(user); save_datalist(); system("pause"); break;
     case 2: removecard(); exit(0); break; } 
     }  
     else{
@@ -158,7 +169,8 @@ void atmClass::saving_pin(){
     fp.close();
 }
 
-void atmClass::save(){
+void atmClass::save_acc(){
+
     fstream accoutInfos;
     accoutInfos.open("userdata.txt",ios::out);
     accoutInfos<<user.name<<endl;
@@ -167,6 +179,18 @@ void atmClass::save(){
     accoutInfos<<user.contactnumber<<'\n';
     accoutInfos<<user.balance<<'\n';
     cout<<"\nACCOUNT SUCCESSFULLY SAVED!";
+    accoutInfos.close();
+ 
+}
+
+void atmClass::retrieve_acc(){
+    fstream accoutInfos;
+    accoutInfos.open("userdata.txt",ios::in);
+    accoutInfos>>user.name;
+    accoutInfos>>user.acc_number;
+    accoutInfos>>user.birthday;
+    accoutInfos>>user.contactnumber;
+    accoutInfos>>user.balance;
     accoutInfos.close();
 }
 
@@ -219,29 +243,6 @@ while(pin[i]!='\0'){
     }
 }
 
-void atmClass::retrieve(){
-    fstream fp;
-    INFO user;
-    fp.open("userdata.txt",ios::in);
-    if(!fp){
-        cout<<"FILE ERROR\n";
-        system("pause");
-    }
-    else{
-        while(true){
-            getline(fp, user.name);
-            fp>>user.acc_number>>user.birthday>>user.contactnumber>>user.balance;
-            fp.ignore();
-
-            if(!fp.eof())
-                add(user);
-            else
-                break;
-        }
-        fp.close();
-    }
-}
-
 int menu(){
     int ans;
     system("cls");
@@ -283,5 +284,39 @@ void atmClass::balance_inquiry(){
         system("pause");
         cout<<"THANK YOU FOR BANKING WITH US!";
         exit(0);
+    }
+}
+
+void atmClass::save_datalist(){
+    fstream fp;
+    fp.open("alldata.txt", ios::out);
+    NODE *p;
+    p=n;
+    while (p!=NULL){
+        fp<<p->user.name<<'\n'<<p->user.acc_number<<'\n'<<p->user.balance<<'\n';
+        p=p->next;
+    }
+    fp.close();
+}
+
+void atmClass::retrieve_datalist(){
+    fstream fp;
+    fp.open("alldata.txt",ios::in);
+    if(!fp){
+        cout<<"File error.\n";
+        system("pause");
+    }
+    else{
+        while(true){
+            getline(fp, user.name);
+            fp>>user.acc_number>>user.balance;
+            fp.ignore();
+
+            if(!fp.eof())
+                add(user);
+            else
+                break;
+        }
+        fp.close();
     }
 }
