@@ -28,7 +28,9 @@ class atmClass{
         void decrypt();
     public:
         void makenull();
+        int locate(int num);
         void add(INFO user);
+        void add2();
         void pincode();
         void insertcard();
         void removecard();
@@ -40,6 +42,8 @@ class atmClass{
         void balance_inquiry();
         void withdraw();
         void deposit();
+        void fund_transfer();
+        void change_pincode();
 };
 
 int menu();
@@ -55,7 +59,9 @@ int main(){
     case 1: system("cls"); ATM.balance_inquiry(); break;
     case 2: system("cls"); ATM.withdraw(); ATM.save(); ATM.removecard(); break;
     case 3: system("cls"); ATM.deposit(); ATM.save(); break;
-    default: cout<<"Please select from 1 to 4!"<<endl; system("pause");
+    case 4: system("cls"); ATM.fund_transfer(); ATM.save(); break;
+    case 5: system("cls"); ATM.change_pincode(); ATM.saving_pin(); break;
+    default: cout<<"Please select from 1 to 5!"<<endl; system("pause");
     }
 
 }
@@ -83,7 +89,6 @@ void atmClass::add(INFO user){
         q->next = temp;
     temp->next = p;
 }
-
 
 void atmClass::insertcard(){
 
@@ -114,8 +119,8 @@ void atmClass::insertcard(){
     case 1: system("cls");
             cout<<"\nREGISTRATION";
             cout<<"\nACCOUNT NUMBER: "<<user.acc_number;
-            cout<<"\nNAME: "; cin.ignore(); getline(cin,user.name);
-            cout<<"\nBIRTHDAY: "; cin.ignore(); getline(cin,user.birthday);
+            cout<<"\nNAME: "; getline(cin,user.name);
+            cout<<"\nBIRTHDAY:  "; cin.ignore(); getline(cin,user.birthday);
             cout<<"\nCONTACT NUMBER: ";cin>>user.contactnumber;    
             cout<<"\nENTER AMOUNT: ";cin>>amount;
             
@@ -136,7 +141,7 @@ void atmClass::insertcard(){
             cout<<"\nBIRTHDAY: "<<user.birthday;
             cout<<"\nCONTACT NUMBER: "<<user.contactnumber;
             cout<<"\nACCOUNT BALANCE: "<<user.balance;
-            encrypt(); saving_pin(); add(user); save(); system("pause"); break;
+            encrypt(); saving_pin(); add(user); system("pause"); break;
     case 2: removecard(); exit(0); break; } 
     }  
     else{
@@ -167,13 +172,11 @@ void atmClass::removecard(){
 void atmClass::saving_pin(){
     fstream fp, fp2;
     fp.open("pinrecord.txt", ios::out); 
-
-    fp2.open("userdata.txt",ios::out);
-
     fp <<accnum<<'\n';
     fp <<pin <<'\n';
     fp.close();
 
+    fp2.open("userdata.txt",ios::out);
     fp2<<user.name<<endl;
     fp2<<user.acc_number<<'\n';
     fp2<<user.birthday<<'\n';
@@ -320,8 +323,9 @@ void atmClass::balance_inquiry(){
         menu();
     }
     else {
-        system("pause");
+        save();
         cout<<"THANK YOU FOR BANKING WITH US!";
+        system("pause");
         exit(0);
     }
 }
@@ -331,6 +335,16 @@ void atmClass::withdraw(){
     NODE *p, *q, *temp;
     p=q=n;
     int withdraw, op;
+    string input;
+
+     while(input!=pin){
+        system("cls");
+        cout<<"\nENTER PIN: ";
+        pincode();
+        input=pin;
+        retrieve_pin();
+        decrypt();
+    }
 
     system("cls");
     cout<<"\nPLEASE SELECT AN AMOUNT: ";
@@ -397,7 +411,17 @@ void atmClass::deposit(){
     NODE *p, *q, *temp;
     p=q=n;
 
+    string input;
     int deposit, ch;
+
+    while(input!=pin){
+        system("cls");
+        cout<<"\nENTER PIN: ";
+        pincode();
+        input=pin;
+        retrieve_pin();
+        decrypt();
+    }
 
     cout<<"\nDEPOSIT";
     cout<<"\nPlease enter amount: ";
@@ -423,5 +447,85 @@ void atmClass::deposit(){
     }
     p->user.balance = p->user.balance + deposit;
     cout<<"\nYour Current Balance: "<<p->user.balance;
+}
+//di pa tapos
+void atmClass::fund_transfer(){
 
+    NODE *p, *q, *transfer;
+    p=q=n;
+
+    int fund, user_acc, total;
+
+    cout<<"\nEnter User Account Number: ";
+    cin>>user_acc;
+
+    while(p!=NULL && user_acc>p->user.acc_number){
+        q=p;
+        p=p->next;
+    }
+
+    if(transfer==NULL){
+        cout<<"\nUSER ACCOUNT NOT FOUND.";
+        system("pause");
+    }
+    
+    else{
+        if(n==transfer){
+            cout<<"\nUSER INFO";
+            cout<<"\nNAME: "<<transfer->user.name;
+            cout<<"\nACCOUNT NUMBER: "<<transfer->user.acc_number;
+
+            cout<<"\nEnter amount: ";
+            cin>>fund;
+            if((fund%100)!=0){
+                cout<<"\n100, 500, 1000";
+            }
+            else if(fund>(p->user.balance-500)){
+                cout<<"\nInsufficient Amount";
+            }
+            else{
+                transfer->user.balance =+ fund;
+                p->user.balance =- fund;
+                cout<<"\nYou have transfered "<<fund;
+                cout<<"\nYour Current Balance is "<<p->user.balance;
+            }
+        }
+    }
+}
+//Need to edit
+int atmClass::locate(int num){
+    NODE *acc;
+    acc = n;
+    
+    while(acc!=NULL){
+        acc = acc->next;
+    }
+}
+
+void atmClass::change_pincode(){
+    NODE *p, *q, *temp;
+    p=q=n;
+
+    string input;
+
+    if(p==NULL){
+        cout<<"DATA DOES NOT EXIST";
+        system("pause");
+    }
+    else{
+
+        while(input!=pin){
+        system("cls");
+        cout<<"\nENTER PIN: ";
+        pincode();
+        input=pin;
+        retrieve_pin();
+        decrypt();
+        }
+
+        cout<<"\nENTER NEW PIN: "; pincode(); encrypt();
+        cout<<"\nPIN SUCCESSFULLY CHANGE.";
+
+        system("pause");
+    }
 }
