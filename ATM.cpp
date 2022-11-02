@@ -29,6 +29,7 @@ class atmClass{
     public:
         void makenull();
         void locate();
+        void locate2();
         void current_user();
         void add(INFO user);
         void add2();
@@ -55,7 +56,7 @@ int main(){
     ATM.makenull();
     ATM.retrieve();
     ATM.insertcard();
-    ATM.locate();
+    ATM.locate2();
     switch (menu()) {
     system("cls");
     case 1: system("cls"); ATM.balance_inquiry(); break;
@@ -297,8 +298,6 @@ int menu(){
 
 void atmClass::balance_inquiry(){
 
-    //p=n;
-
     string input;
     char ans;
 
@@ -502,22 +501,23 @@ void atmClass::change_pincode(){
 
 void atmClass::locate(){
 
-    p=n;
-
-    retrieve_pin();
-    while(p!=NULL && accnum!=p->user.acc_number){
-        p = p->next;
-    }
-
     receiver = n;
 
     while(receiver!=NULL && accnum!=receiver->user.acc_number){
         receiver = receiver->next;
     }
 
+}
+
+void atmClass::locate2(){
+   
+    p=n;
+    retrieve_pin();
+    while(p!=NULL && accnum!=p->user.acc_number){
+        p = p->next;
+    }
+
     system("cls");
     cout<<p->user.name<<p->user.acc_number;
     system("pause");
 }
-
-
