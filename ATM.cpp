@@ -23,13 +23,13 @@ class atmClass{
         NODE *n, *p, *q, *temp, *receiver;
         INFO user;
         char pin[7];
+        string input;
         int i, accnum;
         void encrypt();
         void decrypt();
     public:
         void makenull();
         void locate();
-        void locate2();
         void current_user();
         void add(INFO user);
         void add2();
@@ -56,7 +56,6 @@ int main(){
     ATM.makenull();
     ATM.retrieve();
     ATM.insertcard();
-    ATM.locate2();
     switch (menu()) {
     system("cls");
     case 1: system("cls"); ATM.balance_inquiry(); break;
@@ -298,7 +297,6 @@ int menu(){
 
 void atmClass::balance_inquiry(){
 
-    string input;
     char ans;
 
     while(input!=pin){
@@ -308,6 +306,12 @@ void atmClass::balance_inquiry(){
         input=pin;
         retrieve_pin();
         decrypt();
+    }
+
+    p=n;
+    retrieve_pin();
+    while(p!=NULL && accnum!=p->user.acc_number){
+        p = p->next;
     }
     
     cout<<"\nBALANCE INQUIRY";
@@ -332,9 +336,15 @@ void atmClass::balance_inquiry(){
 void atmClass::withdraw(){
 
     int withdraw, op;
-    string input;
 
-     while(input!=pin){
+    p=n;
+    retrieve_pin();
+    while(p!=NULL && accnum!=p->user.acc_number){
+        p = p->next;
+    }
+
+
+    while(input!=pin){
         system("cls");
         cout<<"\nENTER PIN: ";
         pincode();
@@ -396,8 +406,13 @@ void atmClass::withdraw(){
 
 void atmClass::deposit(){
 
-    string input;
     int deposit, ch;
+
+    p=n;
+    retrieve_pin();
+    while(p!=NULL && accnum!=p->user.acc_number){
+        p = p->next;
+    }
 
     while(input!=pin){
         system("cls");
@@ -439,6 +454,21 @@ void atmClass::fund_transfer(){
 
     int fund, total;
 
+    p=n;
+    retrieve_pin();
+    while(p!=NULL && accnum!=p->user.acc_number){
+        p = p->next;
+    }
+
+    while(input!=pin){
+        system("cls");
+        cout<<"\nENTER PIN: ";
+        pincode();
+        input=pin;
+        retrieve_pin();
+        decrypt();
+    }
+
     cout<<"\nEnter User Account Number: ";
     cin>>accnum;
     
@@ -472,31 +502,36 @@ void atmClass::fund_transfer(){
 }
 
 void atmClass::change_pincode(){
-   
-    p=q=n;
-
-    string input;
-
-    if(p==NULL){
-        cout<<"DATA DOES NOT EXIST";
-        system("pause");
+    
+    string newpin;
+    
+    p=n;
+    retrieve_pin();
+    while(p!=NULL && accnum!=p->user.acc_number){
+        p = p->next;
     }
-    else{
+    
+    while(input!=pin){
+    system("cls");
+    cout<<"\nENTER PIN: ";
+    pincode();
+    input=pin;
+    retrieve_pin();
+    decrypt();
+    }
 
-        while(input!=pin){
+    cout<<"\nENTER NEW PIN: "; pincode();
+    newpin = pin;
+    cout<<"\nRE-ENTER PIN: "; pincode(); 
+    retrieve_pin(); decrypt();
+    while(newpin!=pin){
         system("cls");
-        cout<<"\nENTER PIN: ";
-        pincode();
-        input=pin;
-        retrieve_pin();
-        decrypt();
-        }
-
-        cout<<"\nENTER NEW PIN: "; pincode(); encrypt();
-        cout<<"\nPIN SUCCESSFULLY CHANGE.";
-
-        system("pause");
+        cout<<"\nPIN DOES NOT MATCH";
+        cout<<"\nRE-ENTER PIN: "; pincode();
     }
+    encrypt(); saving_pin();
+    cout<<"\nPIN SUCCESSFULLY CHANGE!";
+    system("pause");
 }
 
 void atmClass::locate(){
@@ -509,15 +544,3 @@ void atmClass::locate(){
 
 }
 
-void atmClass::locate2(){
-   
-    p=n;
-    retrieve_pin();
-    while(p!=NULL && accnum!=p->user.acc_number){
-        p = p->next;
-    }
-
-    system("cls");
-    cout<<p->user.name<<p->user.acc_number;
-    system("pause");
-}
