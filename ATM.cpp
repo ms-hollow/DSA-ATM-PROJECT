@@ -32,7 +32,6 @@ class atmClass{
         void locate();
         void current_user();
         void add(INFO user);
-        void add2();
         void pincode();
         void insertcard();
         void removecard();
@@ -46,6 +45,8 @@ class atmClass{
         void deposit();
         void fund_transfer();
         void change_pincode();
+        void save_record();
+        void retrieve_record();
 };
 
 int menu();
@@ -78,6 +79,8 @@ void atmClass::add(INFO user){
     temp->user.name = user.name;
     temp->user.acc_number = user.acc_number;
     temp->user.balance = user.balance;
+    temp->user.birthday = user.birthday;
+    temp->user.contactnumber = user.contactnumber;
     temp->next = p;
     while(p!=NULL){
         q = p;
@@ -141,7 +144,7 @@ void atmClass::insertcard(){
             cout<<"\nBIRTHDAY: "<<user.birthday;
             cout<<"\nCONTACT NUMBER: "<<user.contactnumber;
             cout<<"\nACCOUNT BALANCE: "<<user.balance;
-            encrypt(); saving_pin(); add(user); save(); system("pause"); break;
+            encrypt(); saving_pin(); add(user); save(); save_record(); system("pause"); break;
     case 2: removecard(); exit(0); break; } 
     }  
     else{
@@ -208,21 +211,20 @@ void atmClass::save(){
 
     p=n;
     fstream datalist;
-    datalist.open("alldata.txt", ios::out);
 
+    datalist.open("alldata.txt", ios::out);
     while (p!=NULL){
         datalist<<p->user.name<<'\n'<<p->user.acc_number<<'\n'<<p->user.balance<<'\n';
         p=p->next;
     }
     datalist.close();
- 
 }
 
 void atmClass::retrieve(){
     
     fstream datalist;
+   
     datalist.open("alldata.txt",ios::in);
-
     if(!datalist){
         cout<<"File error.\n";
         system("pause");
@@ -241,8 +243,6 @@ void atmClass::retrieve(){
         datalist.close();
     }
 }
-
-
 
 void atmClass::pincode(){
     int index =0;
@@ -445,7 +445,7 @@ void atmClass::deposit(){
             cin>>deposit;
         }
     }
-    p->user.balance = p->user.balance + deposit;
+    p->user.balance += deposit;
     cout<<"\nYour Current Balance: "<<p->user.balance;
 }
 
@@ -541,6 +541,39 @@ void atmClass::locate(){
     while(receiver!=NULL && accnum!=receiver->user.acc_number){
         receiver = receiver->next;
     }
-
 }
 
+void atmClass::save_record(){
+    p=n;
+    fstream doc;
+    doc.open("record.txt", ios::out);
+    while (p!=NULL){
+        doc<<p->user.name<<'\n'<<p->user.acc_number<<'\n'<<p->user.birthday<<'\n'<<p->user.contactnumber<<'\n';
+        p=p->next;
+    }
+    doc.close();
+}
+
+void atmClass::retrieve_record(){
+    
+    fstream doc;
+
+    doc.open("record.txt", ios::in);
+    if(!doc){
+        cout<<"File error.\n";
+        system("pause");
+    }
+    else{
+        while(true){
+            getline(doc, user.name);
+            doc>>user.acc_number>>user.birthday>>user.contactnumber;
+            doc.ignore();
+
+            if(!doc.eof())
+                add(user);
+            else
+                break;
+        }
+        doc.close();
+    }
+}
