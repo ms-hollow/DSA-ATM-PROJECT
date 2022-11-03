@@ -10,7 +10,7 @@ using namespace std;
 
 typedef struct info{
     string name, birthday;
-    int acc_number, balance, contactnumber;
+    int acc_number, balance,  contact_num;
 } INFO;
 
 typedef struct node{
@@ -45,8 +45,8 @@ class atmClass{
         void deposit();
         void fund_transfer();
         void change_pincode();
-        void save_record();
-        void retrieve_record();
+        void userinfo();
+        void ret_userinfo();
 };
 
 int menu();
@@ -79,8 +79,6 @@ void atmClass::add(INFO user){
     temp->user.name = user.name;
     temp->user.acc_number = user.acc_number;
     temp->user.balance = user.balance;
-    temp->user.birthday = user.birthday;
-    temp->user.contactnumber = user.contactnumber;
     temp->next = p;
     while(p!=NULL){
         q = p;
@@ -102,7 +100,7 @@ void atmClass::insertcard(){
     do{
         system("cls");
         cout <<"Please insert card...\n";
-        fp.open("pinrecord.txt", ios::in);
+        fp.open("G:\\pinrecord.txt", ios::in);
     }while(!fp);
 
     system("cls");
@@ -124,7 +122,7 @@ void atmClass::insertcard(){
             cout<<"\nACCOUNT NUMBER: "<<user.acc_number;
             cout<<"\nNAME: "; cin.ignore(); getline(cin,user.name);
             cout<<"\nBIRTHDAY:  "; cin.ignore(); getline(cin,user.birthday);
-            cout<<"\nCONTACT NUMBER: ";cin>>user.contactnumber;    
+            cout<<"\nCONTACT NUMBER: "; cin>>user.contact_num;
             cout<<"\nENTER AMOUNT: ";cin>>amount;
             
             while(amount<500 || amount>20000 ){
@@ -142,9 +140,9 @@ void atmClass::insertcard(){
             cout<<"\nACCOUNT NUMBER: "<<user.acc_number;
             cout<<"\nNAME: "<<user.name;
             cout<<"\nBIRTHDAY: "<<user.birthday;
-            cout<<"\nCONTACT NUMBER: "<<user.contactnumber;
+            cout<<"\nCONTACT NUMBER: "<<user.contact_num;
             cout<<"\nACCOUNT BALANCE: "<<user.balance;
-            encrypt(); saving_pin(); add(user); save(); save_record(); system("pause"); break;
+            encrypt(); saving_pin(); add(user); save(); system("pause"); break;
     case 2: removecard(); exit(0); break; } 
     }  
     else{
@@ -166,7 +164,7 @@ void atmClass::removecard(){
     fstream fp;
     do{ system("cls");
         cout <<"Please remove card...";
-        fp.open("pinrecord.txt",ios::out);
+        fp.open("G:\\pinrecord.txt",ios::out);
     }while(fp);
     cout <<"Thank you for banking with MYLUGI BANK ";
     exit(0);
@@ -174,45 +172,53 @@ void atmClass::removecard(){
 
 void atmClass::saving_pin(){
     fstream fp, fp2;
-    fp.open("pinrecord.txt", ios::out); 
-    fp <<accnum<<'\n';
-    fp <<pin <<'\n';
+    fp.open("G:\\pinrecord.txt",ios::out); 
+    fp<<accnum<<'\n';
+    fp<<pin <<'\n';
     fp.close();
 
-    fp2.open("userdata.txt",ios::out);
+    fp2.open("G:\\userdata.txt",ios::out);
     fp2<<user.name<<endl;
     fp2<<user.acc_number<<'\n';
+    fp2<<user.balance<<'\n';
     fp2<<user.birthday<<'\n';
-    fp2<<user.contactnumber<<'\n';
+    fp2<<user.contact_num<<'\n';
     cout<<"\nACCOUNT SUCCESSFULLY SAVED!";
     fp2.close();
+}
+void atmClass::userinfo(){
+
+}
+
+void atmClass::ret_userinfo(){
+    
 }
 
 void atmClass::retrieve_pin(){
     fstream fp, fp2;
-    fp.open("pinrecord.txt", ios::in);
+    fp.open("G:\\pinrecord.txt",ios::in);
     while(!fp.eof()){
-        fp >>accnum;
-        fp >>pin;
+        fp>>accnum;
+        fp>>pin;
     }
     fp.close();
-
-    fp2.open("userdata.txt",ios::in);
     
+    fp2.open("G:\\userdata.txt",ios::in);
+    while(!fp2.eof()){
     fp2>>user.name;
     fp2>>user.acc_number;
+    fp2>>user.balance;
     fp2>>user.birthday;
-    fp2>>user.contactnumber;
+    fp2>>user.contact_num;
+    }
     fp2.close();
-
 }
 
 void atmClass::save(){
-
     p=n;
     fstream datalist;
 
-    datalist.open("alldata.txt", ios::out);
+    datalist.open("userdata.txt", ios::out);
     while (p!=NULL){
         datalist<<p->user.name<<'\n'<<p->user.acc_number<<'\n'<<p->user.balance<<'\n';
         p=p->next;
@@ -224,7 +230,7 @@ void atmClass::retrieve(){
     
     fstream datalist;
    
-    datalist.open("alldata.txt",ios::in);
+    datalist.open("userdata.txt",ios::in);
     if(!datalist){
         cout<<"File error.\n";
         system("pause");
@@ -537,43 +543,7 @@ void atmClass::change_pincode(){
 void atmClass::locate(){
 
     receiver = n;
-
     while(receiver!=NULL && accnum!=receiver->user.acc_number){
         receiver = receiver->next;
-    }
-}
-
-void atmClass::save_record(){
-    p=n;
-    fstream doc;
-    doc.open("record.txt", ios::out);
-    while (p!=NULL){
-        doc<<p->user.name<<'\n'<<p->user.acc_number<<'\n'<<p->user.birthday<<'\n'<<p->user.contactnumber<<'\n';
-        p=p->next;
-    }
-    doc.close();
-}
-
-void atmClass::retrieve_record(){
-    
-    fstream doc;
-
-    doc.open("record.txt", ios::in);
-    if(!doc){
-        cout<<"File error.\n";
-        system("pause");
-    }
-    else{
-        while(true){
-            getline(doc, user.name);
-            doc>>user.acc_number>>user.birthday>>user.contactnumber;
-            doc.ignore();
-
-            if(!doc.eof())
-                add(user);
-            else
-                break;
-        }
-        doc.close();
     }
 }
