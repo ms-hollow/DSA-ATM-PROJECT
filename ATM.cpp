@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <iomanip>
 #include <locale>
+#include <Windows.h>
 
 using namespace std;
 
@@ -64,19 +65,110 @@ class comma_numpunct : public numpunct<char>
 locale comma_locale(locale(), new comma_numpunct());
 int menu();
 
+void SetColor(int ForgC);
+void gotoxy(int x,int y);
+void setFontStyle(int FontSize);
+void ShowConsoleCursor(bool showFlag);
+
 
 int main(){
+
     atmClass ATM;
     ATM.makenull();
     ATM.retrieve();
     ATM.insertcard();
-    switch (menu()) {
-    case 1: system("cls"); ATM.balance_inquiry(); break;
-    case 2: system("cls"); ATM.withdraw(); ATM.save(); break;
-    case 3: system("cls"); ATM.deposit(); ATM.save();  break;
-    case 4: system("cls"); ATM.fund_transfer(); ATM.save(); break;
-    case 5: system("cls"); ATM.change_pincode(); ATM.saving_pin(); break;
-    default: cout<<"Please select from 1 to 5!"<<endl; system("pause");
+
+    setFontStyle(23);
+    string Menu[7] = {"BALANCE INQUIRY", "WITHDRAW ", "DEPOSIT ", "FUND TRANSFER", "CHANGE PINCODE", "EXIT "};
+    int pointer = 0;
+    const char ENTER = 13;//ASCII code for ENTER Key
+    char ch = ' ';
+    HANDLE  hConsole;
+    hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    while(true){
+        system("cls");
+        ShowConsoleCursor(false);
+        SetColor(14);
+        printf(R"EOF(
+                   ____      _      _   _       _  __     ____    ____        _       ____
+                U | __")uU  /"\  u | \ |"|     |"|/ /  U /"___|U |  _"\ u U  /"\  u U|  _"\ u
+                 \|  _ \/ \/ _ \/ <|  \| |>    | ' /   \| | u   \| |_) |/  \/ _ \/  \| |_) |/
+                  | |_) | / ___ \ U| |\  |u  U/| . \\u  | |/__   |  _ <    / ___ \   |  __/
+                  |____/ /_/   \_\ |_| \_|     |_|\_\    \____|  |_| \_\  /_/   \_\  |_|
+                 _|| \\_  \\    >> ||   \\,-.,-,>> \\,-._// \\   //   \\_  \\    >>  ||>>_
+                (__) (__)(__)  (__)(_")  (_/  \.)   (_/(__)(__) (__)  (__)(__)  (__)(__)__)
+
+
+        )EOF");
+        SetColor(15);
+        gotoxy(28, 18);
+        cout<<"USE UP OR DOWN ARROW KEYS TO NAVIGATE THROUGH MENU";
+
+        for(int i=0; i<6; ++i){
+            //This will highlight the choice in the menu
+            if(i==pointer){
+                gotoxy(48,10+i);
+                SetConsoleTextAttribute(hConsole, 14);
+                cout << Menu[i] << endl;
+            }else{
+                gotoxy(48,10+i);
+                SetConsoleTextAttribute(hConsole, 15); // set color of the text to white
+                cout << Menu[i] << endl;
+            }
+             SetConsoleTextAttribute(hConsole, 15);
+        }
+        //This will check the key stroke that is being pressed in keyboard
+        while(true){
+            if(GetAsyncKeyState(VK_UP) != 0){
+                --pointer;
+                if(pointer == -1){
+                    pointer = 6;
+                }
+                break;
+            }else if(GetAsyncKeyState(VK_DOWN) != 0){
+                ++pointer;
+                if(pointer == 7){
+                    pointer = 0;
+                }
+                break;
+            }else if(ch=getch() == ENTER){
+                switch(pointer){
+                    case 0: ShowConsoleCursor(true);
+                            ATM.balance_inquiry();
+                            ATM.save();
+                            system("pause");
+                            break;
+
+                    case 1: ShowConsoleCursor(true);
+                            ATM.withdraw();
+                            ATM.save();
+                            system("pause");
+                            break;
+
+                    case 2: ShowConsoleCursor(true);
+                            ATM.deposit();
+                            ATM.save();
+                            system("pause");
+                            break;
+
+                    case 3: ShowConsoleCursor(true);
+                            ATM.fund_transfer();
+                            ATM.save();
+                            system("pause");
+                            break;
+                    case 4: ShowConsoleCursor(true);
+                            ATM.change_pincode();
+                            ATM.save();
+                            system("pause");
+                            break;
+                    case 5: ShowConsoleCursor(false);
+                            cout<<"EXIT\n";
+                }
+                break;
+            }
+        }
+
     }
 }
 
@@ -85,7 +177,7 @@ void atmClass::makenull(){
 }
 
 void atmClass::add(INFO user){
-    
+
     p=q=n;
     temp = new NODE;
     temp->user.name = user.name;
@@ -108,7 +200,7 @@ void atmClass::insertcard(){
     fstream fp;
     string input, checker;
     int ch, amount;
-
+    setFontStyle(23);
     do{
         system("cls");
         cout <<"Please insert card...\n";
@@ -132,12 +224,12 @@ void atmClass::insertcard(){
     case 1: system("cls");
             cout<<"\nREGISTRATION";
             cout<<"\nACCOUNT NUMBER: "<<user.acc_number;
-            cin.ignore(); 
+            cin.ignore();
             cout<<"\nNAME: "; getline(cin, user.name);
             cout<<"\nBIRTHDAY: "; getline(cin, user.birthday);
             cout<<"\nCONTACT NUMBER: "; cin>>user.contact_num;
             cout<<"\nENTER AMOUNT: ";cin>>amount;
-            
+
             while(amount<500 || amount>20000){
             system("cls");
             cout<<"\nATM ONLY ACCEPTS MINIMUM OF 500 PESOS AND MAXIMUM OF 20,000 PESOS PER DEPOSIT";
@@ -156,8 +248,8 @@ void atmClass::insertcard(){
             cout<<"\nCONTACT NUMBER: "<<user.contact_num;
             cout.imbue(comma_locale);cout<<"\nACCOUNT BALANCE: "<<setprecision(2)<<fixed<<user.balance<<" pesos";
             encrypt(); saving_pin(); add(user); save(); system("pause"); break;
-    case 2: removecard(); exit(0); break; } 
-    }  
+    case 2: removecard(); exit(0); break; }
+    }
     else{
         while(input!=pin){
         system("cls");
@@ -184,7 +276,7 @@ void atmClass::removecard(){
 
 void atmClass::saving_pin(){
     fstream fp, fp2;
-    fp.open("G:\\pinrecord.txt",ios::out); 
+    fp.open("G:\\pinrecord.txt",ios::out);
     fp<<accnum<<'\n';
     fp<<pin <<'\n';
     fp.close();
@@ -206,7 +298,7 @@ void atmClass::retrieve_pin(){
         fp>>pin;
     }
     fp.close();
-    
+
     fp2.open("G:\\userdata.txt",ios::in);
     while(!fp2.eof()){
     fp2>>user.name;
@@ -230,9 +322,9 @@ void atmClass::save(){
 }
 
 void atmClass::retrieve(){
-    
+
     fstream datalist;
-   
+
     datalist.open("data.txt",ios::in);
     if(!datalist){
         cout<<"File error.\n";
@@ -293,21 +385,23 @@ void atmClass::decrypt(){
 }
 
 int menu(){
-    int ans;
+
+    const char ENTER = 13;
     system("cls");
     cout<<"\n[1] BALANCE INQUIRY";
     cout<<"\n[2] WITHDRAW MONEY";
     cout<<"\n[3] DEPOSIT";
     cout<<"\n[4] FUND TRANSFER";
     cout<<"\n[5] CHANGE PIN";
-    cout<<"SELECT (1-4): "; cin>>ans;
-    return(ans);
+    cout<<"\n[6] EXIT";
+    char ch = ' ';
+    return(ch);
 }
 
 void atmClass::balance_inquiry(){
 
     char ans;
-    
+
     p=n;
     retrieve_pin();
     while(p!=NULL && accnum!=p->user.acc_number){
@@ -322,7 +416,7 @@ void atmClass::balance_inquiry(){
         retrieve_pin();
         decrypt();
     }
-    
+
     cout<<"\nBALANCE INQUIRY";
     cout<<"\nACCOUNT NUMBER: "<<p->user.acc_number;
     cout.imbue(comma_locale); cout<<"\nYOUR BALANCE IS: "<<setprecision(2)<<fixed<<p->user.balance;
@@ -351,7 +445,7 @@ void atmClass::withdraw(){
     while(p!=NULL && accnum!=p->user.acc_number){
         p = p->next;
     }
-    
+
     while(input!=pin){
         system("cls");
         cout<<"\nENTER PIN: ";
@@ -374,7 +468,7 @@ void atmClass::withdraw(){
     cout<<"\n8. 10,000";
     cout<<"\n9. ENTER AMOUNT";
     cout<<"\nCHOICE: ";cin>>op;
-    
+
     switch (op)
     {
     case 1: cout<<"\nYou have selected 500"; withdraw = 500; break;
@@ -393,7 +487,7 @@ void atmClass::withdraw(){
         cout<<"\nNOTE: THIS MACHINE ONLY ACCEPTS & DISPENSE 1000, 500, AND 100";
         cout<<"\nEnter Amount: ";
         cin>>withdraw;
-        
+
         if(withdraw>(p->user.balance-500)){
             system("cls");
             cout<<"\nInsufficient Balance";
@@ -434,7 +528,7 @@ void atmClass::deposit(){
     cout<<"\nDEPOSIT";
     cout<<"\nPlease enter amount: ";
     cin>>deposit;
-    
+
     if((deposit%100)!=0){
         cout<<"\n100, 500, 1000";
     }
@@ -482,14 +576,14 @@ void atmClass::fund_transfer(){
 
     cout<<"\nEnter User Account Number: ";
     cin>>accnum;
-    
+
     locate();
 
     if (receiver==NULL){
         cout<<"\nUSER ACCOUNT NOT FOUND.";
         system("pause");
     }
-    
+
     else{
         cout<<"\nUSER INFO";
         cout<<"\nNAME: "<<receiver->user.name;
@@ -513,15 +607,15 @@ void atmClass::fund_transfer(){
 }
 
 void atmClass::change_pincode(){
-    
+
     string newpin;
-    
+
     p=n;
     retrieve_pin();
     while(p!=NULL && accnum!=p->user.acc_number){
         p = p->next;
     }
-    
+
     while(input!=pin){
     system("cls");
     cout<<"\nENTER PIN: ";
@@ -536,7 +630,7 @@ void atmClass::change_pincode(){
 
     cout<<"\nENTER NEW PIN: "; pincode();
     newpin = pin;
-    cout<<"\nRE-ENTER PIN: "; pincode(); 
+    cout<<"\nRE-ENTER PIN: "; pincode();
     retrieve_pin(); decrypt();
     while(newpin!=pin){
         system("cls");
@@ -554,4 +648,50 @@ void atmClass::locate(){
     while(receiver!=NULL && accnum!=receiver->user.acc_number){
         receiver = receiver->next;
     }
+}
+
+void gotoxy(int x,int y){
+    COORD coord = {0,0};
+    coord.X=x;
+    coord.Y=y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE),coord);
+}
+
+void SetColor(int ForgC){
+  WORD wColor;
+
+  HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+  CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+                       //We use csbi for the wAttributes word.
+ if(GetConsoleScreenBufferInfo(hStdOut, &csbi))
+ {
+                 //Mask out all but the background attribute, and add in the forgournd color
+      wColor = (csbi.wAttributes & 0xF0) + (ForgC & 0x0F);
+      SetConsoleTextAttribute(hStdOut, wColor);
+ }
+ return;
+}
+
+void setFontStyle(int FontSize){
+    CONSOLE_FONT_INFOEX cfi;
+    cfi.cbSize = sizeof(cfi);
+    cfi.nFont = 0;
+    cfi.dwFontSize.X = 0;                   // Width of each character in the font
+    cfi.dwFontSize.Y = FontSize;                  // Height
+    cfi.FontFamily = FF_DONTCARE;
+    cfi.FontWeight = FW_NORMAL;
+    std::wcscpy(cfi.FaceName, L"Courier New"); // font style
+    SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+}
+
+void ShowConsoleCursor(bool showFlag)
+{
+    HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    CONSOLE_CURSOR_INFO     cursorInfo;
+
+    GetConsoleCursorInfo(out, &cursorInfo);
+    cursorInfo.bVisible = showFlag; // set the cursor visibility
+    SetConsoleCursorInfo(out, &cursorInfo);
 }
