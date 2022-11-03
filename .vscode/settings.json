@@ -9,6 +9,7 @@
         "string": "cpp",
         "istream": "cpp",
         "xlocale": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "xlocnum": "cpp"
     }
 }

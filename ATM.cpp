@@ -5,6 +5,7 @@
 #include <conio.h>
 #include <cstdlib>
 #include <iomanip>
+#include <locale>
 
 using namespace std;
 
@@ -45,10 +46,22 @@ class atmClass{
         void deposit();
         void fund_transfer();
         void change_pincode();
-        void userinfo();
-        void ret_userinfo();
 };
 
+class comma_numpunct : public numpunct<char>
+{
+  protected:
+    virtual char do_thousands_sep() const{
+        return ',';
+    }
+
+    virtual string do_grouping() const{
+        return "\03";
+    }
+};
+
+
+locale comma_locale(locale(), new comma_numpunct());
 int menu();
 
 
@@ -58,10 +71,9 @@ int main(){
     ATM.retrieve();
     ATM.insertcard();
     switch (menu()) {
-    system("cls");
     case 1: system("cls"); ATM.balance_inquiry(); break;
-    case 2: system("cls"); ATM.withdraw(); ATM.save(); ATM.removecard(); break;
-    case 3: system("cls"); ATM.deposit(); ATM.save(); break;
+    case 2: system("cls"); ATM.withdraw(); ATM.save(); break;
+    case 3: system("cls"); ATM.deposit(); ATM.save();  break;
     case 4: system("cls"); ATM.fund_transfer(); ATM.save(); break;
     case 5: system("cls"); ATM.change_pincode(); ATM.saving_pin(); break;
     default: cout<<"Please select from 1 to 5!"<<endl; system("pause");
@@ -120,12 +132,13 @@ void atmClass::insertcard(){
     case 1: system("cls");
             cout<<"\nREGISTRATION";
             cout<<"\nACCOUNT NUMBER: "<<user.acc_number;
-            cout<<"\nNAME: "; cin.ignore(); getline(cin,user.name);
-            cout<<"\nBIRTHDAY:  "; cin.ignore(); getline(cin,user.birthday);
+            cin.ignore(); 
+            cout<<"\nNAME: "; getline(cin, user.name);
+            cout<<"\nBIRTHDAY: "; getline(cin, user.birthday);
             cout<<"\nCONTACT NUMBER: "; cin>>user.contact_num;
             cout<<"\nENTER AMOUNT: ";cin>>amount;
             
-            while(amount<500 || amount>20000 ){
+            while(amount<500 || amount>20000){
             system("cls");
             cout<<"\nATM ONLY ACCEPTS MINIMUM OF 500 PESOS AND MAXIMUM OF 20,000 PESOS PER DEPOSIT";
             cout<<"\nEnter Initial Amount: ";
@@ -141,7 +154,7 @@ void atmClass::insertcard(){
             cout<<"\nNAME: "<<user.name;
             cout<<"\nBIRTHDAY: "<<user.birthday;
             cout<<"\nCONTACT NUMBER: "<<user.contact_num;
-            cout<<"\nACCOUNT BALANCE: "<<user.balance;
+            cout.imbue(comma_locale);cout<<"\nACCOUNT BALANCE: "<<setprecision(2)<<fixed<<user.balance<<" pesos";
             encrypt(); saving_pin(); add(user); save(); system("pause"); break;
     case 2: removecard(); exit(0); break; } 
     }  
@@ -149,7 +162,6 @@ void atmClass::insertcard(){
         while(input!=pin){
         system("cls");
         cout<<"\nLOG IN";
-        system("cls");
         cout<<"\nENTER PIN: ";
         pincode();
         input=pin;
@@ -180,18 +192,10 @@ void atmClass::saving_pin(){
     fp2.open("G:\\userdata.txt",ios::out);
     fp2<<user.name<<endl;
     fp2<<user.acc_number<<'\n';
-    fp2<<user.balance<<'\n';
     fp2<<user.birthday<<'\n';
     fp2<<user.contact_num<<'\n';
     cout<<"\nACCOUNT SUCCESSFULLY SAVED!";
     fp2.close();
-}
-void atmClass::userinfo(){
-
-}
-
-void atmClass::ret_userinfo(){
-    
 }
 
 void atmClass::retrieve_pin(){
@@ -207,7 +211,6 @@ void atmClass::retrieve_pin(){
     while(!fp2.eof()){
     fp2>>user.name;
     fp2>>user.acc_number;
-    fp2>>user.balance;
     fp2>>user.birthday;
     fp2>>user.contact_num;
     }
@@ -218,7 +221,7 @@ void atmClass::save(){
     p=n;
     fstream datalist;
 
-    datalist.open("userdata.txt", ios::out);
+    datalist.open("data.txt", ios::out);
     while (p!=NULL){
         datalist<<p->user.name<<'\n'<<p->user.acc_number<<'\n'<<p->user.balance<<'\n';
         p=p->next;
@@ -230,7 +233,7 @@ void atmClass::retrieve(){
     
     fstream datalist;
    
-    datalist.open("userdata.txt",ios::in);
+    datalist.open("data.txt",ios::in);
     if(!datalist){
         cout<<"File error.\n";
         system("pause");
@@ -273,7 +276,7 @@ void atmClass::pincode(){
     pin[index]='\0';
     }
 
-    void atmClass::encrypt(){
+void atmClass::encrypt(){
     int i=0;
     while(pin[i]!='\0'){
         pin[i]=pin[i] + 70;
@@ -282,11 +285,11 @@ void atmClass::pincode(){
 }
 
 void atmClass::decrypt(){
-int i=0;
-while(pin[i]!='\0'){
-    pin[i]=pin[i] - 70;
-    i++;
-    }
+    int i=0;
+    while(pin[i]!='\0'){
+        pin[i]=pin[i] - 70;
+        i++;
+        }
 }
 
 int menu(){
@@ -304,6 +307,12 @@ int menu(){
 void atmClass::balance_inquiry(){
 
     char ans;
+    
+    p=n;
+    retrieve_pin();
+    while(p!=NULL && accnum!=p->user.acc_number){
+        p = p->next;
+    }
 
     while(input!=pin){
         system("cls");
@@ -313,16 +322,10 @@ void atmClass::balance_inquiry(){
         retrieve_pin();
         decrypt();
     }
-
-    p=n;
-    retrieve_pin();
-    while(p!=NULL && accnum!=p->user.acc_number){
-        p = p->next;
-    }
     
     cout<<"\nBALANCE INQUIRY";
     cout<<"\nACCOUNT NUMBER: "<<p->user.acc_number;
-    cout<<"\nYOUR BALANCE IS: "<<p->user.balance;
+    cout.imbue(comma_locale); cout<<"\nYOUR BALANCE IS: "<<setprecision(2)<<fixed<<p->user.balance;
     cout<<"\nDO YOU WANT TO DO ANOTHER TRANSACTION?";
     cout<<"\nIF YES PLEASE ENTER [Y] IF NO PRESS ANY KEY [N]";
     cout<<"\nAnswer: "; cin>>ans;
@@ -348,8 +351,7 @@ void atmClass::withdraw(){
     while(p!=NULL && accnum!=p->user.acc_number){
         p = p->next;
     }
-
-
+    
     while(input!=pin){
         system("cls");
         cout<<"\nENTER PIN: ";
@@ -363,12 +365,12 @@ void atmClass::withdraw(){
     cout<<"\nPLEASE SELECT AN AMOUNT: ";
 
     cout<<"\n1. 500";
-    cout<<"\n2. 1000";
-    cout<<"\n3. 2000";
-    cout<<"\n4. 3000";
-    cout<<"\n5. 5000";
-    cout<<"\n6. 6000";
-    cout<<"\n7. 8000";
+    cout<<"\n2. 1,000";
+    cout<<"\n3. 2,000";
+    cout<<"\n4. 3,000";
+    cout<<"\n5. 5,000";
+    cout<<"\n6. 6,000";
+    cout<<"\n7. 8,000";
     cout<<"\n8. 10,000";
     cout<<"\n9. ENTER AMOUNT";
     cout<<"\nCHOICE: ";cin>>op;
@@ -376,12 +378,12 @@ void atmClass::withdraw(){
     switch (op)
     {
     case 1: cout<<"\nYou have selected 500"; withdraw = 500; break;
-    case 2: cout<<"\nYou have selected 1000"; withdraw = 1000; break;
-    case 3: cout<<"\nYou have selected 2000"; withdraw = 2000; break;
-    case 4: cout<<"\nYou have selected 3000"; withdraw = 3000; break;
-    case 5: cout<<"\nYou have selected 5000"; withdraw = 5000; break;
-    case 6: cout<<"\nYou have selected 6000"; withdraw = 6000; break;
-    case 7: cout<<"\nYou have selected 8000"; withdraw = 8000; break;
+    case 2: cout<<"\nYou have selected 1,000"; withdraw = 1000; break;
+    case 3: cout<<"\nYou have selected 2,000"; withdraw = 2000; break;
+    case 4: cout<<"\nYou have selected 3,000"; withdraw = 3000; break;
+    case 5: cout<<"\nYou have selected 5,000"; withdraw = 5000; break;
+    case 6: cout<<"\nYou have selected 6,000"; withdraw = 6000; break;
+    case 7: cout<<"\nYou have selected 8,000"; withdraw = 8000; break;
     case 8: cout<<"\nYou have selected 10,000"; withdraw = 10000; break;
     case 9: cout<<"\nEnter amount: "; cin>>withdraw; break;
     }
@@ -399,12 +401,12 @@ void atmClass::withdraw(){
 
         if(withdraw>50000){
             system("cls");
-            cout<<"Amount should not exist from 50000";
+            cout<<"Amount should not exist from 50,000";
         }
     }
     p->user.balance = p->user.balance - withdraw;
 
-    cout<<"\nYOUR ACCOUNT BALANCE IS:  "<<p->user.balance;
+    cout.imbue(comma_locale); cout<<"\nYOUR ACCOUNT BALANCE IS:  "<<setprecision(2)<<fixed<<p->user.balance;
     system("pause");
     cout<<"\nTHANK YOU FOR BANKING WITH US";
     system("cls");
@@ -412,7 +414,7 @@ void atmClass::withdraw(){
 
 void atmClass::deposit(){
 
-    int deposit, ch;
+    int deposit, ch, dep2;
 
     p=n;
     retrieve_pin();
@@ -440,19 +442,22 @@ void atmClass::deposit(){
         cout<<"\nThis ATM is not accepting large amount of money.";
     }
     else{
-        cout<<"\nYou have entered: "<<deposit;
+        cout.imbue(comma_locale); cout<<"\nYou have entered: "<<setprecision(2)<<fixed<<deposit;
+        dep2 = deposit;
         cout<<"\nIs the amount correct? [Press 1 to confirm]";
         cout<<"\nInsert more cash? [Press 2 to confirm]\n";
         cin>>ch;
         if(ch==1){
-            cout<<"\nYou have deposit "<<deposit<<" pesos.";
+            cout.imbue(comma_locale);cout<<"\nYou have deposit "<<setprecision(2)<<fixed<<deposit<<" pesos.";
         } else{
             cout<<"\nPlease enter amount: ";
             cin>>deposit;
+            deposit += dep2;
+            cout.imbue(comma_locale); cout<<"\nThe total amount you entered is "<<setprecision(2)<<fixed<<" pesos.";
         }
     }
     p->user.balance += deposit;
-    cout<<"\nYour Current Balance: "<<p->user.balance;
+    cout.imbue(comma_locale); cout<<"\nYour Current Balance: "<<setprecision(2)<<fixed<<p->user.balance;
 }
 
 
@@ -525,6 +530,9 @@ void atmClass::change_pincode(){
     retrieve_pin();
     decrypt();
     }
+
+    cout<<"\nNAME: "<<p->user.name;
+    cout<<"\nACCOUNT NUMBER: "<<p->user.acc_number;
 
     cout<<"\nENTER NEW PIN: "; pincode();
     newpin = pin;
