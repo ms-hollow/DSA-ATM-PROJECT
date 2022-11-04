@@ -24,6 +24,7 @@ class atmClass{
     private:
         NODE *n, *p, *q, *temp, *receiver;
         INFO user;
+        string MENU[7];
         char pin[7];
         string input;
         int i, accnum;
@@ -63,8 +64,6 @@ class comma_numpunct : public numpunct<char>
 
 
 locale comma_locale(locale(), new comma_numpunct());
-int menu();
-
 void SetColor(int ForgC);
 void gotoxy(int x,int y);
 void setFontStyle(int FontSize);
@@ -79,6 +78,7 @@ int main(){
     ATM.insertcard();
 
     setFontStyle(23);
+    gotoxy(45, 12);
     string Menu[7] = {"BALANCE INQUIRY", "WITHDRAW ", "DEPOSIT ", "FUND TRANSFER", "CHANGE PINCODE", "EXIT "};
     int pointer = 0;
     const char ENTER = 13;//ASCII code for ENTER Key
@@ -89,19 +89,21 @@ int main(){
     while(true){
         system("cls");
         ShowConsoleCursor(false);
-        SetColor(14);
-        printf(R"EOF(
-                   ____      _      _   _       _  __     ____    ____        _       ____
-                U | __")uU  /"\  u | \ |"|     |"|/ /  U /"___|U |  _"\ u U  /"\  u U|  _"\ u
-                 \|  _ \/ \/ _ \/ <|  \| |>    | ' /   \| | u   \| |_) |/  \/ _ \/  \| |_) |/
-                  | |_) | / ___ \ U| |\  |u  U/| . \\u  | |/__   |  _ <    / ___ \   |  __/
-                  |____/ /_/   \_\ |_| \_|     |_|\_\    \____|  |_| \_\  /_/   \_\  |_|
-                 _|| \\_  \\    >> ||   \\,-.,-,>> \\,-._// \\   //   \\_  \\    >>  ||>>_
-                (__) (__)(__)  (__)(_")  (_/  \.)   (_/(__)(__) (__)  (__)(__)  (__)(__)__)
+        SetColor(14); gotoxy(50,2);
+        cout<< R"(
+                         ____      _     _   _  _  __   ____  ____      _     ____
+                        | __ )    / \   | \ | || |/ /  / ___||  _ \    / \   |  _ \
+                        |  _ \   / _ \  |  \| || ' /  | |    | |_) |  / _ \  | |_) |
+                        | |_) | / ___ \ | |\  || . \  | |___ |  _ <  / ___ \ |  __/
+                        |____/ /_/   \_\|_| \_||_|\_\  \____||_| \_\/_/   \_\|_|
 
-
-        )EOF");
-        SetColor(15);
+        )"<<endl;SetColor(15);
+        gotoxy(40,10);cout<<">++('>";
+        gotoxy(40,11);cout<<">++('>";
+        gotoxy(40,12);cout<<">++('>";
+        gotoxy(40,13);cout<<">++('>";
+        gotoxy(40,14);cout<<">++('>";
+        gotoxy(40,15);cout<<">++('>";
         gotoxy(28, 18);
         cout<<"USE UP OR DOWN ARROW KEYS TO NAVIGATE THROUGH MENU";
 
@@ -137,30 +139,30 @@ int main(){
                     case 0: ShowConsoleCursor(true);
                             ATM.balance_inquiry();
                             ATM.save();
-                            system("pause");
+                            //system("pause");
                             break;
 
                     case 1: ShowConsoleCursor(true);
                             ATM.withdraw();
                             ATM.save();
-                            system("pause");
+                            //system("pause");
                             break;
 
                     case 2: ShowConsoleCursor(true);
                             ATM.deposit();
                             ATM.save();
-                            system("pause");
+                            //system("pause");
                             break;
 
                     case 3: ShowConsoleCursor(true);
                             ATM.fund_transfer();
                             ATM.save();
-                            system("pause");
+                            //system("pause");
                             break;
                     case 4: ShowConsoleCursor(true);
                             ATM.change_pincode();
                             ATM.save();
-                            system("pause");
+                            //system("pause");
                             break;
                     case 5: ShowConsoleCursor(false);
                             cout<<"EXIT\n";
@@ -222,45 +224,48 @@ void atmClass::insertcard(){
 
     switch (ch){
     case 1: system("cls");
-            cout<<"\nREGISTRATION";
-            cout<<"\nACCOUNT NUMBER: "<<user.acc_number;
+            gotoxy(45,6); SetColor(2); cout<<"REGISTRATION"; SetColor(15);
+            gotoxy(35,8); cout<<"ACCOUNT NUMBER: "<<user.acc_number;
             cin.ignore();
-            cout<<"\nNAME: "; getline(cin, user.name);
-            cout<<"\nBIRTHDAY: "; getline(cin, user.birthday);
-            cout<<"\nCONTACT NUMBER: "; cin>>user.contact_num;
-            cout<<"\nENTER AMOUNT: ";cin>>amount;
+            gotoxy(35,9); cout<<"NAME: "; getline(cin, user.name);
+            gotoxy(35,10); cout<<"BIRTHDAY: "; getline(cin, user.birthday);
+            gotoxy(35,11); cout<<"CONTACT NUMBER: "; cin>>user.contact_num;
+            gotoxy(35,12); cout<<"AMOUNT: ";cin>>amount;
 
             while(amount<500 || amount>20000){
             system("cls");
-            cout<<"\nATM ONLY ACCEPTS MINIMUM OF 500 PESOS AND MAXIMUM OF 20,000 PESOS PER DEPOSIT";
-            cout<<"\nEnter Initial Amount: ";
-            cin>>amount;
-            }
+            gotoxy(15,8); SetColor(4); cout<<"!! ATM ONLY ACCEPTS MINIMUM OF 500 PESOS AND MAXIMUM OF 20,000 PESOS PER DEPOSIT!!"; SetColor(15);
+            gotoxy(35,10); cout<<"Enter Initial Amount: "; cin>>amount;}
             user.balance = amount;
-            cout<<"PIN: "; pincode();
-            system("cls");
+            gotoxy(35,13); cout<<"PIN: "; pincode();
 
-            cout<<"\nACCOUNT IS NOW REGISTERED";
-            cout<<"\n=========================\n";
-            cout<<"\nACCOUNT NUMBER: "<<user.acc_number;
-            cout<<"\nNAME: "<<user.name;
-            cout<<"\nBIRTHDAY: "<<user.birthday;
-            cout<<"\nCONTACT NUMBER: "<<user.contact_num;
-            cout.imbue(comma_locale);cout<<"\nACCOUNT BALANCE: "<<setprecision(2)<<fixed<<user.balance<<" pesos";
+            system("cls");
+            gotoxy(40,6); cout<<"ACCOUNT IS NOW REGISTERED";
+            gotoxy(40,7); cout<<"=========================\n";
+            gotoxy(40,8); cout<<"ACCOUNT NUMBER: "<<user.acc_number;
+            gotoxy(40,9); cout<<"NAME: "<<user.name;
+            gotoxy(40,10); cout<<"BIRTHDAY: "<<user.birthday;
+            gotoxy(40,11); cout<<"CONTACT NUMBER: "<<user.contact_num;
+            gotoxy(40,12); cout.imbue(comma_locale);cout<<"ACCOUNT BALANCE: "<<setprecision(2)<<fixed<<user.balance<<" pesos";
             encrypt(); saving_pin(); add(user); save(); system("pause"); break;
     case 2: removecard(); exit(0); break; }
     }
     else{
         while(input!=pin){
         system("cls");
-        cout<<"\nLOG IN";
-        cout<<"\nENTER PIN: ";
+        SetColor(14); gotoxy(50,2);
+        cout<< R"(
+
+        )"<<endl;SetColor(15);
+        gotoxy(50,6); SetColor(2); cout<<"LOG IN"; SetColor(15);
+        gotoxy(40,8); cout<<"ENTER PIN: ";
         pincode();
         input=pin;
         retrieve_pin();
         decrypt();
         }
-        cout<<"\nACCOUNT SUCCESSFULLY LOG IN\n";
+        gotoxy(40,10); cout<<"LOG IN SUCCESSFULLY!";
+        gotoxy(40,11); system("pause");
     }
 }
 
@@ -360,7 +365,7 @@ void atmClass::pincode(){
         }
         if(isdigit(ch)){
             pin[index++]=ch;
-        putchar('*');
+        SetColor(2); putchar('*'); SetColor(15);
         }
     }
     if (index==5)
@@ -384,20 +389,6 @@ void atmClass::decrypt(){
         }
 }
 
-int menu(){
-
-    const char ENTER = 13;
-    system("cls");
-    cout<<"\n[1] BALANCE INQUIRY";
-    cout<<"\n[2] WITHDRAW MONEY";
-    cout<<"\n[3] DEPOSIT";
-    cout<<"\n[4] FUND TRANSFER";
-    cout<<"\n[5] CHANGE PIN";
-    cout<<"\n[6] EXIT";
-    char ch = ' ';
-    return(ch);
-}
-
 void atmClass::balance_inquiry(){
 
     char ans;
@@ -410,28 +401,28 @@ void atmClass::balance_inquiry(){
 
     while(input!=pin){
         system("cls");
-        cout<<"\nENTER PIN: ";
+        gotoxy(40,10);cout<<"ENTER PIN: ";
         pincode();
         input=pin;
         retrieve_pin();
         decrypt();
     }
-
-    cout<<"\nBALANCE INQUIRY";
-    cout<<"\nACCOUNT NUMBER: "<<p->user.acc_number;
-    cout.imbue(comma_locale); cout<<"\nYOUR BALANCE IS: "<<setprecision(2)<<fixed<<p->user.balance;
-    cout<<"\nDO YOU WANT TO DO ANOTHER TRANSACTION?";
-    cout<<"\nIF YES PLEASE ENTER [Y] IF NO PRESS ANY KEY [N]";
-    cout<<"\nAnswer: "; cin>>ans;
-    system("pause");
+    system("cls");
+    gotoxy(45,8); SetColor(2); cout<<"BALANCE INQUIRY"; SetColor(15);
+    gotoxy(35,10); cout<<"ACCOUNT NUMBER: "<<p->user.acc_number;
+    gotoxy(35,11); cout.imbue(comma_locale); cout<<"YOUR BALANCE IS: "<<setprecision(2)<<fixed<<p->user.balance;
+    gotoxy(35,13); cout<<"DO YOU WANT TO DO ANOTHER TRANSACTION?";
+    gotoxy(35,14); cout<<"IF YES PLEASE ENTER [Y] IF NO PRESS ANY KEY [N]";
+    gotoxy(35,15); cout<<"Answer: "; cin>>ans;
+    gotoxy(35,16); system("pause");
     if(ans=='Y' || ans=='y'){
-        system("cls");
-        menu();
+    MENU[i];
     }
     else {
         save();
-        cout<<"THANK YOU FOR BANKING WITH US!";
-        system("pause");
+        system("cls");
+        gotoxy(45,10); cout<<"THANK YOU FOR BANKING WITH US!";
+        gotoxy(45,11); system("pause");
         exit(0);
     }
 }
