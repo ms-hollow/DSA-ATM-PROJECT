@@ -205,7 +205,7 @@ void atmClass::insertcard(){
     setFontStyle(23);
     do{
         system("cls");
-        gotoxy(40,10); SetColor(4); cout <<"Please insert card...\n"; SetColor(15);
+        cout <<"Please insert card...\n";
         fp.open("G:\\pinrecord.txt", ios::in);
     }while(!fp);
 
@@ -217,9 +217,9 @@ void atmClass::insertcard(){
     user.acc_number = accnum;
 
     if(checker.length()==0){
-        cout<<"YOUR ACCOUNT IS NOT REGISTER";
-        cout<<"[1] REGISTER\n"<<"\n[2] EXIT";
-        cout<<"PLEASE SELECT YOUR NUMBER OF CHOICE: ";
+        cout<<"\nYOUR ACCOUNT IS NOT REGISTER\n";
+        cout<<"\n[1] REGISTER\n"<<"\n[2] EXIT\n";
+        cout<<"\nPLEASE SELECT YOUR NUMBER OF CHOICE: ";
         cin>>ch;
 
     switch (ch){
@@ -253,7 +253,10 @@ void atmClass::insertcard(){
     else{
         while(input!=pin){
         system("cls");
-        SetColor(14); gotoxy(47,4);cout<<"WELCOME BACK!"; SetColor(15);
+        SetColor(14); gotoxy(50,2);
+        cout<< R"(
+
+        )"<<endl;SetColor(15);
         gotoxy(50,6); SetColor(2); cout<<"LOG IN"; SetColor(15);
         gotoxy(40,8); cout<<"ENTER PIN: ";
         pincode();
@@ -269,10 +272,10 @@ void atmClass::insertcard(){
 void atmClass::removecard(){
     fstream fp;
     do{ system("cls");
-        gotoxy(40,10); SetColor(4); cout <<"Please remove card..."; SetColor(15);
+        cout <<"Please remove card...";
         fp.open("G:\\pinrecord.txt",ios::out);
     }while(fp);
-    gotoxy(40,10); cout <<"Thank you for banking with BANK CRAP ";
+    cout <<"Thank you for banking with MYLUGI BANK ";
     exit(0);
 }
 
@@ -288,7 +291,7 @@ void atmClass::saving_pin(){
     fp2<<user.acc_number<<'\n';
     fp2<<user.birthday<<'\n';
     fp2<<user.contact_num<<'\n';
-    gotoxy(40,14); cout<<"ACCOUNT SUCCESSFULLY SAVED!";
+    cout<<"\nACCOUNT SUCCESSFULLY SAVED!";
     fp2.close();
 }
 
@@ -405,13 +408,14 @@ void atmClass::balance_inquiry(){
         decrypt();
     }
     system("cls");
+    gotoxy(33,5); cout<<__DATE__; gotoxy(72,5); cout<<__TIME__;
     gotoxy(45,8); SetColor(2); cout<<"BALANCE INQUIRY"; SetColor(15);
-    gotoxy(35,10); cout<<"ACCOUNT NUMBER: "<<p->user.acc_number;
-    gotoxy(35,11); cout.imbue(comma_locale); cout<<"YOUR BALANCE IS: "<<setprecision(2)<<fixed<<p->user.balance;
-    gotoxy(35,13); cout<<"DO YOU WANT TO DO ANOTHER TRANSACTION?";
-    gotoxy(35,14); cout<<"IF YES PLEASE ENTER [Y] IF NO PRESS ANY KEY [N]";
-    gotoxy(35,15); cout<<"Answer: "; cin>>ans;
-    gotoxy(35,16); system("pause");
+    gotoxy(33,10); cout<<"ACCOUNT NUMBER: "<<p->user.acc_number;
+    gotoxy(33,11); cout.imbue(comma_locale); cout<<"YOUR BALANCE IS: "<<setprecision(2)<<fixed<<p->user.balance;
+    gotoxy(33,13); cout<<"DO YOU WANT TO DO ANOTHER TRANSACTION?";
+    gotoxy(33,14); cout<<"IF YES PLEASE ENTER [Y] IF NO PRESS ANY KEY [N]";
+    gotoxy(33,15); cout<<"Answer: "; cin>>ans;
+    gotoxy(33,16); system("pause");
     if(ans=='Y' || ans=='y'){
     MENU[i];
     }
@@ -444,18 +448,20 @@ void atmClass::withdraw(){
     }
 
     system("cls");
-    cout<<"\nPLEASE SELECT AN AMOUNT: ";
 
-    cout<<"\n1. 500";
-    cout<<"\n2. 1,000";
-    cout<<"\n3. 2,000";
-    cout<<"\n4. 3,000";
-    cout<<"\n5. 5,000";
-    cout<<"\n6. 6,000";
-    cout<<"\n7. 8,000";
-    cout<<"\n8. 10,000";
-    cout<<"\n9. ENTER AMOUNT";
-    cout<<"\nCHOICE: ";cin>>op;
+    gotoxy(32,5); cout<<__DATE__; gotoxy(72,5); cout<<__TIME__;
+    gotoxy(45,8); SetColor(2); cout<<"WITHDRAW"; SetColor(15);
+    gotoxy(32,10); cout<<"\nPLEASE SELECT AN AMOUNT: ";
+    cout<<"1. 500";
+    cout<<"2. 1,000";
+    cout<<"3. 2,000";
+    cout<<"4. 3,000";
+    cout<<"5. 5,000";
+    cout<<"6. 6,000";
+    cout<<"7. 8,000";
+    cout<<"8. 10,000";
+    cout<<"9. ENTER AMOUNT";
+    cout<<"CHOICE: ";cin>>op;
 
     switch (op)
     {
