@@ -205,7 +205,7 @@ void atmClass::insertcard(){
     setFontStyle(23);
     do{
         system("cls");
-        cout <<"Please insert card...\n";
+        gotoxy(40,10); SetColor(4); cout <<"Please insert card...\n"; SetColor(15);
         fp.open("G:\\pinrecord.txt", ios::in);
     }while(!fp);
 
@@ -217,9 +217,9 @@ void atmClass::insertcard(){
     user.acc_number = accnum;
 
     if(checker.length()==0){
-        cout<<"\nYOUR ACCOUNT IS NOT REGISTER\n";
-        cout<<"\n[1] REGISTER\n"<<"\n[2] EXIT\n";
-        cout<<"\nPLEASE SELECT YOUR NUMBER OF CHOICE: ";
+        cout<<"YOUR ACCOUNT IS NOT REGISTER";
+        cout<<"[1] REGISTER\n"<<"\n[2] EXIT";
+        cout<<"PLEASE SELECT YOUR NUMBER OF CHOICE: ";
         cin>>ch;
 
     switch (ch){
@@ -234,7 +234,7 @@ void atmClass::insertcard(){
 
             while(amount<500 || amount>20000){
             system("cls");
-            gotoxy(15,8); SetColor(4); cout<<"!! ATM ONLY ACCEPTS MINIMUM OF 500 PESOS AND MAXIMUM OF 20,000 PESOS PER DEPOSIT!!"; SetColor(15);
+            gotoxy(15,8); SetColor(4); cout<<"!!ATM ONLY ACCEPTS MINIMUM OF 500 PESOS AND MAXIMUM OF 20,000 PESOS PER DEPOSIT!!"; SetColor(15);
             gotoxy(35,10); cout<<"Enter Initial Amount: "; cin>>amount;}
             user.balance = amount;
             gotoxy(35,13); cout<<"PIN: "; pincode();
@@ -253,10 +253,7 @@ void atmClass::insertcard(){
     else{
         while(input!=pin){
         system("cls");
-        SetColor(14); gotoxy(50,2);
-        cout<< R"(
-
-        )"<<endl;SetColor(15);
+        SetColor(14); gotoxy(47,4);cout<<"WELCOME BACK!"; SetColor(15);
         gotoxy(50,6); SetColor(2); cout<<"LOG IN"; SetColor(15);
         gotoxy(40,8); cout<<"ENTER PIN: ";
         pincode();
@@ -272,10 +269,10 @@ void atmClass::insertcard(){
 void atmClass::removecard(){
     fstream fp;
     do{ system("cls");
-        cout <<"Please remove card...";
+        gotoxy(40,10); SetColor(4); cout <<"Please remove card..."; SetColor(15);
         fp.open("G:\\pinrecord.txt",ios::out);
     }while(fp);
-    cout <<"Thank you for banking with MYLUGI BANK ";
+    gotoxy(40,10); cout <<"Thank you for banking with BANK CRAP ";
     exit(0);
 }
 
@@ -291,7 +288,7 @@ void atmClass::saving_pin(){
     fp2<<user.acc_number<<'\n';
     fp2<<user.birthday<<'\n';
     fp2<<user.contact_num<<'\n';
-    cout<<"\nACCOUNT SUCCESSFULLY SAVED!";
+    gotoxy(40,14); cout<<"ACCOUNT SUCCESSFULLY SAVED!";
     fp2.close();
 }
 
