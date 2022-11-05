@@ -506,31 +506,38 @@ void atmClass::deposit(){
         decrypt();
     }
 
-    cout<<"\nDEPOSIT";
-    cout<<"\nPlease enter amount: ";
+    system("cls");
+    gotoxy(52,8); SetColor(14); cout<<"DEPOSIT"; SetColor(15);
+    gotoxy(32,10); cout<<"ENTER AMOUNT: ";
     cin>>deposit;
 
+
     if((deposit%100)!=0){
-        cout<<"\n100, 500, 1000";
+        system("cls");
+        gotoxy(22,10);SetColor(4);cout<<"NOTE: THIS MACHINE ONLY ACCEPTS & DISPENSE 1000, 500, AND 100 PESOS";SetColor(15);
     }
-    else if(deposit>20000){
-        cout<<"\nThis ATM is not accepting large amount of money.";
+    if(deposit>20000){
+        system("cls");
+         gotoxy(22,10);SetColor(4);cout<<"THIS ATM DOES NOT ACCEPT LARGE AMOUNTS OF CASH";SetColor(15);
     }
-    else{
-        cout.imbue(comma_locale); cout<<"\nYou have entered: "<<setprecision(2)<<fixed<<deposit;
-        dep2 = deposit;
-        cout<<"\nIs the amount correct? [Press 1 to confirm]";
-        cout<<"\nInsert more cash? [Press 2 to confirm]\n";
-        cin>>ch;
-        if(ch==1){
-            cout.imbue(comma_locale);cout<<"\nYou have deposit "<<setprecision(2)<<fixed<<deposit<<" pesos.";
+    while ((deposit%100)!=0 || deposit>20000){
+        gotoxy(22,10);SetColor(4);cout<<"NOTE: THIS MACHINE ONLY ACCEPTS & DISPENSE 1000, 500, AND 100 PESOS";SetColor(15);
+        gotoxy(32,15); cout<<"ENTER AMOUNT: "; cin>>deposit;
+    }
+
+    cout.imbue(comma_locale); cout<<"\nYou have entered: "<<setprecision(2)<<fixed<<deposit;
+    dep2 = deposit;
+    cout<<"\nIs the amount correct? [Press 1 to confirm]";
+    cout<<"\nInsert more cash? [Press 2 to confirm]\n";
+    cin>>ch;
+    if(ch==1){
+        cout.imbue(comma_locale);cout<<"\nYou have deposit "<<setprecision(2)<<fixed<<deposit<<" pesos.";
         } else{
             cout<<"\nPlease enter amount: ";
             cin>>deposit;
             deposit += dep2;
             cout.imbue(comma_locale); cout<<"\nThe total amount you entered is "<<setprecision(2)<<fixed<<" pesos.";
         }
-    }
     p->user.balance += deposit;
     cout.imbue(comma_locale); cout<<"\nYour Current Balance: "<<setprecision(2)<<fixed<<p->user.balance;
 }
