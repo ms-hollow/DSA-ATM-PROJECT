@@ -469,7 +469,7 @@ void atmClass::withdraw(){
     }
     if(withdraw>50000){
         system("cls");
-        SetColor(4); cout<<"THE AMOUNT MUST NOT EXCEED 50,000 PESOS"; SetColor(15);
+        gotoxy(32,13); SetColor(4); cout<<"THE AMOUNT MUST NOT EXCEED 50,000 PESOS"; SetColor(15);
     }
     while ((withdraw%100)!=0 || withdraw>(p->user.balance-500) || withdraw>50000){
         gotoxy(22,10);SetColor(4);cout<<"NOTE: THIS MACHINE ONLY ACCEPTS & DISPENSE 1000, 500, AND 100 PESOS";SetColor(15);
@@ -507,39 +507,32 @@ void atmClass::deposit(){
     }
 
     system("cls");
-    gotoxy(52,8); SetColor(14); cout<<"DEPOSIT"; SetColor(15);
-    gotoxy(32,10); cout<<"ENTER AMOUNT: ";
-    cin>>deposit;
 
+    while (deposit%100!=0 || deposit>=20000){
+        gotoxy(52,8); SetColor(14); cout<<"DEPOSIT"; SetColor(15);
+        gotoxy(32,10); cout<<"ENTER AMOUNT: ";
+        cin>>deposit;
 
     if((deposit%100)!=0){
-        system("cls");
-        gotoxy(22,10);SetColor(4);cout<<"NOTE: THIS MACHINE ONLY ACCEPTS & DISPENSE 1000, 500, AND 100 PESOS";SetColor(15);
+        gotoxy(22,12);SetColor(4);cout<<"NOTE: THIS MACHINE ONLY ACCEPTS & DISPENSE 1000, 500, AND 100 PESOS";SetColor(15);gotoxy(22,13);system("pause");system("cls");
     }
-    if(deposit>20000){
-        system("cls");
-         gotoxy(22,10);SetColor(4);cout<<"THIS ATM DOES NOT ACCEPT LARGE AMOUNTS OF CASH";SetColor(15);
-    }
-    while ((deposit%100)!=0 || deposit>20000){
-        gotoxy(22,10);SetColor(4);cout<<"NOTE: THIS MACHINE ONLY ACCEPTS & DISPENSE 1000, 500, AND 100 PESOS";SetColor(15);
-        gotoxy(32,15); cout<<"ENTER AMOUNT: "; cin>>deposit;
-    }
-
-    cout.imbue(comma_locale); cout<<"\nYou have entered: "<<setprecision(2)<<fixed<<deposit;
-    dep2 = deposit;
-    cout<<"\nIs the amount correct? [Press 1 to confirm]";
-    cout<<"\nInsert more cash? [Press 2 to confirm]\n";
-    cin>>ch;
-    if(ch==1){
-        cout.imbue(comma_locale);cout<<"\nYou have deposit "<<setprecision(2)<<fixed<<deposit<<" pesos.";
-        } else{
-            cout<<"\nPlease enter amount: ";
-            cin>>deposit;
-            deposit += dep2;
-            cout.imbue(comma_locale); cout<<"\nThe total amount you entered is "<<setprecision(2)<<fixed<<" pesos.";
+    else if(deposit>20000){
+         gotoxy(27,12);SetColor(4);cout<<"THIS ATM DOES NOT ACCEPT LARGE AMOUNTS OF CASH";SetColor(15);gotoxy(22,13);system("pause");system("cls");
         }
+    }
+    cout.imbue(comma_locale);gotoxy(32,12);cout<<"YOU ENTERED: "<<setprecision(2)<<fixed<<deposit<<" PESOS.";
+    dep2 = deposit;
+    gotoxy(32,13); cout<<"IS THE AMOUNT CORRECT? [Press 1 to confirm] "; cin>>ch;
+    if(ch==1){
+        cout.imbue(comma_locale);gotoxy(32,16);cout<<"YOU DEPOSIT "<<setprecision(2)<<fixed<<deposit<<" PESOS."; gotoxy(32,17);system("pause"); system("cls");
+    }
     p->user.balance += deposit;
-    cout.imbue(comma_locale); cout<<"\nYour Current Balance: "<<setprecision(2)<<fixed<<p->user.balance;
+    gotoxy(32,5); cout<<"PROCESSING "<<'\n'; loading_ani();
+    gotoxy(32,7); cout<<"PLEASE ENTER ANY KEY"; getch();
+    cout.imbue(comma_locale); gotoxy(32,9); cout<<"YOUR CURRENT BALANCE IS: "<<setprecision(2)<<fixed<<p->user.balance<<" PESOS.";
+    gotoxy(32,10); system("pause");
+    gotoxy(32,12); cout<<"THANK YOU FOR BANKING WITH US";
+    system("cls");
 }
 
 
@@ -555,41 +548,46 @@ void atmClass::fund_transfer(){
 
     while(input!=pin){
         system("cls");
-        cout<<"\nENTER PIN: ";
+        gotoxy(40,10); cout<<"ENTER PIN: ";
         pincode();
         input=pin;
         retrieve_pin();
         decrypt();
     }
 
-    cout<<"\nEnter User Account Number: ";
-    cin>>accnum;
-
+    gotoxy(52,8); SetColor(14); cout<<"FUND TRANSFER"; SetColor(15);
+    gotoxy(32,10); cout<<"Enter User Account Number: "; cin>>accnum;
     locate();
 
+    gotoxy(32,5); cout<<"PROCESSING "<<'\n'; loading_ani();
+    gotoxy(32,7); cout<<"PLEASE ENTER ANY KEY"; getch();
+
     if (receiver==NULL){
-        cout<<"\nUSER ACCOUNT NOT FOUND.";
+        gotoxy(32,9); cout<<"USER ACCOUNT NOT FOUND.";
         system("pause");
     }
 
     else{
-        cout<<"\nUSER INFO";
-        cout<<"\nNAME: "<<receiver->user.name;
-        cout<<"\nACCOUNT NUMBER: "<<receiver->user.acc_number;
+        gotoxy(32,9); cout<<"USER INFO";
+        gotoxy(32,10); cout<<"NAME: "<<receiver->user.name;
+        gotoxy(32,11); cout<<"ACCOUNT NUMBER: "<<receiver->user.acc_number;
 
-        cout<<"\nEnter amount: ";
-        cin>>fund;
+        gotoxy(32,13); cout<<"Enter amount: "; cin>>fund;
         if((fund%100)!=0){
-            cout<<"\n100, 500, 1000";
+             gotoxy(32,14); cout<<"100, 500, 1000";
         }
         else if(fund>(p->user.balance-500)){
-            cout<<"\nInsufficient Amount";
+             gotoxy(32,14); cout<<"Insufficient Amount";
         }
         else{
             p->user.balance -= fund;
             receiver->user.balance += fund;
-            cout<<"\nYou have transfered "<<fund;
-            cout<<"\nYour Current Balance is "<<p->user.balance;
+            gotoxy(32,15); cout<<"YOU ARE TRANSFERING "<<fund<<" PESOS TO"<<receiver->user.name;
+            gotoxy(32,16); cout<<" WITH AN ACCOUNT NUMBER OF "<<receiver->user.acc_number;
+            gotoxy(32,17); cout<<"PRESS ANY KEY TO CONFIRM."; getch();
+            gotoxy(32,18); cout<<fund<<"PESOS IS SUCCESSFULLY TRANSFERED TO "<<receiver->user.name;
+            gotoxy(32,19); cout<<"YOUR CURRENT BALANCE IS "<<p->user.balance<<" PESOS.";
+            gotoxy(32,19); system("pause"); system("cls");
             }
     }
 }
