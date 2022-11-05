@@ -222,11 +222,11 @@ void atmClass::insertcard(){
     srand(time(NULL));
     accnum = (rand()%(999999)+10000);
     user.acc_number = accnum;
-    gotxy(45,6);
+    gotoxy(45,6);
     if(checker.length()==0){
-        cout<<"YOUR ACCOUNT IS NOT REGISTER\n";
-        cout<<"[1] REGISTER\n"<<"[2] EXIT\n";
-        cout<<"PLEASE SELECT YOUR NUMBER OF CHOICE: ";
+        gotoxy(41,6); SetColor(4); cout<<"YOUR ACCOUNT IS NOT REGISTERED"; SetColor(15);
+        gotoxy(36,8); cout<<"[1] REGISTER";gotoxy(36,9);cout<<"[2] EXIT";
+        gotoxy(36,10); cout<<"PLEASE SELECT YOUR NUMBER OF CHOICE: ";
         cin>>ch;
 
     switch (ch){
@@ -247,14 +247,14 @@ void atmClass::insertcard(){
             gotoxy(35,13); cout<<"PIN: "; pincode();
 
             system("cls");
-            gotoxy(40,6); cout<<"ACCOUNT IS NOW REGISTERED";
+            gotoxy(40,6); SetColor(14); cout<<"ACCOUNT IS NOW REGISTERED"; SetColor(15);
             gotoxy(40,7); cout<<"=========================\n";
             gotoxy(40,8); cout<<"ACCOUNT NUMBER: "<<user.acc_number;
             gotoxy(40,9); cout<<"NAME: "<<user.name;
             gotoxy(40,10); cout<<"BIRTHDAY: "<<user.birthday;
             gotoxy(40,11); cout<<"CONTACT NUMBER: "<<user.contact_num;
             gotoxy(40,12); cout.imbue(comma_locale);cout<<"ACCOUNT BALANCE: "<<setprecision(2)<<fixed<<user.balance<<" pesos";
-            encrypt(); saving_pin(); add(user); save(); system("pause"); break;
+            encrypt(); saving_pin(); add(user); save(); gotoxy(40,13); system("pause"); break;
     case 2: removecard(); exit(0); break; }
     }
     else{
@@ -282,7 +282,7 @@ void atmClass::removecard(){
         cout <<"Please remove card...";
         fp.open("G:\\pinrecord.txt",ios::out);
     }while(fp);
-    gotoxy(40,10); cout <<"Thank you for banking with us! See you in future transactions!";
+    gotoxy(40,10); cout <<"THANK YOU FOR BANKING WITH US! SEE YOU IN FUTURE TRANSACTIONS!";
     exit(0);
 }
 
