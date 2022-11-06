@@ -1,3 +1,9 @@
+/*
+    ABBEGAIL MILES LEONEN
+    BSCS-NS-2B
+    PROJECT IN DATA STRUCTURES AND ALGORITHM
+*/
+
 #include <iostream>
 #include <fstream>
 #include <time.h>
