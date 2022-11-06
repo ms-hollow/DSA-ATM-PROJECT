@@ -142,37 +142,32 @@ int main(){
                             ATM.balance_inquiry();
                             ATM.save();
                             ATM.leave();
-                            //system("pause");
                             break;
 
                     case 1: ShowConsoleCursor(true);
                             ATM.withdraw();
                             ATM.save();
                             ATM.leave();
-                            //system("pause");
                             break;
 
                     case 2: ShowConsoleCursor(true);
                             ATM.deposit();
                             ATM.save();
                             ATM.leave();
-                            //system("pause");
                             break;
 
                     case 3: ShowConsoleCursor(true);
                             ATM.fund_transfer();
                             ATM.save();
                             ATM.leave();
-                            //system("pause");
                             break;
                     case 4: ShowConsoleCursor(true);
                             ATM.change_pincode();
                             ATM.save();
                             ATM.leave();
-                            //system("pause");
                             break;
                     case 5: ShowConsoleCursor(false);
-                            cout<<"EXIT\n";
+                            ATM.leave();
                 }
                 break;
             }
@@ -344,6 +339,7 @@ void atmClass::retrieve(){
     }
     else{
         while(true){
+            //datalist.ignore();
             getline(datalist, user.name);
             datalist>>user.acc_number>>user.balance;
             datalist.ignore();
@@ -603,7 +599,7 @@ void atmClass::fund_transfer(){
 
 void atmClass::change_pincode(){
 
-    string newpin;
+    string newpin, re_newpin;
 
     p=n;
     retrieve_pin();
@@ -626,15 +622,19 @@ void atmClass::change_pincode(){
 
     gotoxy(32,10); cout<<"NAME: "<<p->user.name;
     gotoxy(32,11); cout<<"ACCOUNT NUMBER: "<<p->user.acc_number;
-
     gotoxy(32,12); cout<<"ENTER NEW PIN: "; pincode();
     newpin = pin;
-    gotoxy(32,13); cout<<"RE-ENTER PIN: "; pincode();
-    retrieve_pin(); decrypt();
-    while(newpin!=pin){
+    while(newpin==pin){
+        gotoxy(32,15); SetColor(4); cout<<"YOUR NEW PIN CANNOT BE THE SAME AS YOUR CURRENT PIN"; SetColor(15); system("pause"); system("cls");
+        gotoxy(32,12); cout<<"ENTER NEW PIN: "; pincode();
+
+        gotoxy(32,13); cout<<"RE-ENTER PIN: "; pincode();
+        re_newpin = pin;
+        while(re_newpin!=pin){
         gotoxy(32,15); SetColor(4); cout<<"ERROR: PIN DOES NOT MATCH"; SetColor(15);
-        gotoxy(32,16); cout<<"RE-ENTER PIN: "; pincode();
+        }
     }
+    if(re_newpin==pin){
     encrypt(); saving_pin();
     system("cls");
     gotoxy(32,5); cout<<"PROCESSING "<<'\n'; loading_ani();
@@ -642,6 +642,8 @@ void atmClass::change_pincode(){
     gotoxy(32,9); cout<<"PIN SUCCESSFULLY CHANGE!";
     gotoxy(32,10); cout<<"THANK YOU FOR BANKING WITH US";
     gotoxy(32,11); system("pause");
+    }
+    system("cls");
 }
 
 void atmClass::locate(){
@@ -723,4 +725,3 @@ void loading_ani(){
     SetColor(15);
 }
 
-//HELLO
