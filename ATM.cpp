@@ -418,7 +418,7 @@ void atmClass::balance_inquiry(){
     gotoxy(50,8); SetColor(14); cout<<"BALANCE INQUIRY"; SetColor(15);
     gotoxy(33,10); cout<<"ACCOUNT NUMBER: "<<p->user.acc_number;
     gotoxy(33,11); cout.imbue(comma_locale); cout<<"YOUR BALANCE IS: "<<setprecision(2)<<fixed<<p->user.balance<<" PESOS.";
-    gotoxy(32,12); cout<<"THANK YOU FOR BANKING WITH US"; gotoxy(32,13); system("pause");
+    gotoxy(33,12); cout<<"THANK YOU FOR BANKING WITH US"; gotoxy(32,13); system("pause"); system("cls");
 }
 
 void atmClass::withdraw(){
@@ -639,12 +639,19 @@ void atmClass::change_pincode(){
     }
     encrypt();
     if(newpin==re_newpin){
-    encrypt(); saving_pin();
     system("cls");
     gotoxy(32,5); cout<<"PROCESSING "<<'\n'; loading_ani();
     gotoxy(32,8); cout<<"PLEASE ENTER ANY KEY"; getch();
     gotoxy(32,9); cout<<"PIN SUCCESSFULLY CHANGE!";
-    gotoxy(32,12); cout<<"THANK YOU FOR BANKING WITH US"; gotoxy(32,13); system("pause");
+    gotoxy(32,10); cout<<"ACCOUNT INFORMATION";
+    gotoxy(32,11); cout<<"=========================";
+    gotoxy(32,12); cout<<"ACCOUNT NUMBER: "<<user.acc_number;
+    gotoxy(32,13); cout<<"NAME: "<<user.name;
+    gotoxy(32,14); cout<<"BIRTHDAY: "<<user.birthday;
+    gotoxy(32,15); cout<<"CONTACT NUMBER: "<<user.contact_num;
+    gotoxy(32,16); cout.imbue(comma_locale);cout<<"ACCOUNT BALANCE: "<<setprecision(2)<<fixed<<user.balance<<" pesos";
+    gotoxy(32,17); cout<<"THANK YOU FOR BANKING WITH US"; gotoxy(32,13); system("pause");
+    encrypt(); saving_pin();
     system("cls");
     }
 }
