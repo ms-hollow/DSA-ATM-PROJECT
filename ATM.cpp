@@ -167,7 +167,7 @@ int main(){
                             ATM.leave();
                             break;
                     case 5: ShowConsoleCursor(false);
-                            ATM.leave();
+                            exit(0);
                 }
                 break;
             }
@@ -207,8 +207,8 @@ void atmClass::insertcard(){
     setFontStyle(23);
     do{
         system("cls");
-        cout <<"Please insert card...\n";
-        fp.open("G:\\pinrecord.txt", ios::in);
+        gotoxy(41,6); SetColor(4); cout<<"PLEASE INSERT CARD"; SetColor(15);
+        fp.open("D:\\pinrecord.txt", ios::in);
     }while(!fp);
 
     system("cls");
@@ -243,23 +243,20 @@ void atmClass::insertcard(){
             gotoxy(35,13); cout<<"PIN: "; pincode();
 
             system("cls");
-            gotoxy(40,6); cout<<"ACCOUNT IS NOW REGISTERED";
-            gotoxy(40,7); cout<<"=========================";
-            gotoxy(40,8); cout<<"ACCOUNT NUMBER: "<<user.acc_number;
-            gotoxy(40,9); cout<<"NAME: "<<user.name;
-            gotoxy(40,10); cout<<"BIRTHDAY: "<<user.birthday;
-            gotoxy(40,11); cout<<"CONTACT NUMBER: "<<user.contact_num;
-            gotoxy(40,12); cout.imbue(comma_locale);cout<<"ACCOUNT BALANCE: "<<setprecision(2)<<fixed<<user.balance<<" pesos";
-            encrypt(); saving_pin(); add(user); save(); gotoxy(40,13); system("pause"); break;
+            gotoxy(34,6); SetColor(14); cout<<"WELCOME"; SetColor(15);
+            gotoxy(40,10); cout<<"ACCOUNT IS NOW REGISTERED";
+            gotoxy(40,11); cout<<"=========================";
+            gotoxy(40,12); cout<<"ACCOUNT NUMBER: "<<user.acc_number;
+            gotoxy(40,13); cout<<"NAME: "<<user.name;
+            gotoxy(40,14); cout<<"BIRTHDAY: "<<user.birthday;
+            gotoxy(40,15); cout<<"CONTACT NUMBER: "<<user.contact_num;
+            gotoxy(40,16); cout.imbue(comma_locale);cout<<"ACCOUNT BALANCE: "<<setprecision(2)<<fixed<<user.balance<<" pesos";
+            encrypt(); saving_pin(); add(user); save(); gotoxy(40,17); system("pause"); break;
     case 2: removecard(); exit(0); break; }
     }
     else{
         while(input!=pin){
         system("cls");
-        SetColor(14); gotoxy(50,2);
-        cout<< R"(
-
-        )"<<endl;SetColor(15);
         gotoxy(50,6); SetColor(14); cout<<"LOG IN"; SetColor(15);
         gotoxy(40,8); cout<<"ENTER PIN: ";
         pincode();
@@ -275,21 +272,30 @@ void atmClass::insertcard(){
 void atmClass::removecard(){
     fstream fp;
     do{ system("cls");
-        cout <<"Please remove card...";
-        fp.open("G:\\pinrecord.txt",ios::out);
+        gotoxy(41,6); SetColor(4); cout <<"PLEASE REMOVE CARD"; SetColor(15);
+        fp.open("D:\\pinrecord.txt",ios::out);
     }while(fp);
+    SetColor(14); gotoxy(50,2);
+        cout<< R"(
+                         ____      _     _   _  _  __   ____  ____      _     ____
+                        | __ )    / \   | \ | || |/ /  / ___||  _ \    / \   |  _ \
+                        |  _ \   / _ \  |  \| || ' /  | |    | |_) |  / _ \  | |_) |
+                        | |_) | / ___ \ | |\  || . \  | |___ |  _ <  / ___ \ |  __/
+                        |____/ /_/   \_\|_| \_||_|\_\  \____||_| \_\/_/   \_\|_|
+
+        )"<<endl;SetColor(15);
     gotoxy(40,10); cout <<"Thank you for banking with us! See you in future transactions!";
     exit(0);
 }
 
 void atmClass::saving_pin(){
     fstream fp, fp2;
-    fp.open("G:\\pinrecord.txt",ios::out);
+    fp.open("D:\\pinrecord.txt",ios::out);
     fp<<accnum<<'\n';
     fp<<pin <<'\n';
     fp.close();
 
-    fp2.open("G:\\userdata.txt",ios::out);
+    fp2.open("D:\\userdata.txt",ios::out);
     fp2<<user.name<<endl;
     fp2<<user.acc_number<<'\n';
     fp2<<user.birthday<<'\n';
@@ -299,14 +305,14 @@ void atmClass::saving_pin(){
 
 void atmClass::retrieve_pin(){
     fstream fp, fp2;
-    fp.open("G:\\pinrecord.txt",ios::in);
+    fp.open("D:\\pinrecord.txt",ios::in);
     while(!fp.eof()){
         fp>>accnum;
         fp>>pin;
     }
     fp.close();
 
-    fp2.open("G:\\userdata.txt",ios::in);
+    fp2.open("D:\\userdata.txt",ios::in);
     while(!fp2.eof()){
     fp2>>user.name;
     fp2>>user.acc_number;
@@ -339,7 +345,6 @@ void atmClass::retrieve(){
     }
     else{
         while(true){
-            //datalist.ignore();
             getline(datalist, user.name);
             datalist>>user.acc_number>>user.balance;
             datalist.ignore();
@@ -410,9 +415,10 @@ void atmClass::balance_inquiry(){
     }
     system("cls");
     gotoxy(33,5); cout<<__DATE__; gotoxy(72,5); cout<<__TIME__;
-    gotoxy(45,8); SetColor(14); cout<<"BALANCE INQUIRY"; SetColor(15);
+    gotoxy(50,8); SetColor(14); cout<<"BALANCE INQUIRY"; SetColor(15);
     gotoxy(33,10); cout<<"ACCOUNT NUMBER: "<<p->user.acc_number;
-    gotoxy(33,11); cout.imbue(comma_locale); cout<<"YOUR BALANCE IS:"<<setprecision(2)<<fixed<<p->user.balance<<" PESOS.";
+    gotoxy(33,11); cout.imbue(comma_locale); cout<<"YOUR BALANCE IS: "<<setprecision(2)<<fixed<<p->user.balance<<" PESOS.";
+    gotoxy(32,12); cout<<"THANK YOU FOR BANKING WITH US"; gotoxy(32,13); system("pause");
 }
 
 void atmClass::withdraw(){
@@ -459,16 +465,11 @@ void atmClass::withdraw(){
     case 8: gotoxy(32,22); cout<<"YOU SELECTED 10,000 PESOS"; withdraw = 10000; break;
     case 9: gotoxy(32,22); cout<<"ENTER AMOUNT: "; cin>>withdraw; break;
     }
-    gotoxy(32,23); system("pause");
-    if(withdraw>(p->user.balance-500)){
-        system("cls");
-        gotoxy(32,13); SetColor(4); cout<<"INSUFFICIENT BALANCE"; SetColor(15);
-    }
-    if(withdraw>50000){
-        system("cls");
-        SetColor(4); cout<<"THE AMOUNT MUST NOT EXCEED 50,000 PESOS"; SetColor(15);
-    }
-    while ((withdraw%100)!=0 || withdraw>(p->user.balance-500) || withdraw>50000){
+    gotoxy(32,23); system("pause"); system("cls");
+    while ((withdraw%100)!=0 || withdraw>(p->user.balance-500)){
+        if(withdraw>(p->user.balance-500)){
+        gotoxy(32,13); SetColor(4); cout<<"INSUFFICIENT BALANCE"; SetColor(15); gotoxy(32,14); system("pause"); system("cls");
+        }
         gotoxy(22,10);SetColor(4);cout<<"NOTE: THIS MACHINE ONLY ACCEPTS & DISPENSE 1000, 500, AND 100 PESOS";SetColor(15);
         gotoxy(32,15); cout<<"ENTER AMOUNT: "; cin>>withdraw;
     }
@@ -478,9 +479,8 @@ void atmClass::withdraw(){
     gotoxy(32,7); cout<<"PLEASE ENTER ANY KEY"; getch();
 
     gotoxy(32,10); cout<<"YOU WITHDRAW "<<withdraw<<" PESOS.";
-    cout.imbue(comma_locale); gotoxy(32,11); cout<<"YOUR CURRENT ACCOUNT BALANCE IS:  "<<setprecision(2)<<fixed<<p->user.balance<<" PESOS."; gotoxy(32,12); system("pause");
-
-    cout<<"THANK YOU FOR BANKING WITH US";
+    cout.imbue(comma_locale); gotoxy(32,11); cout<<"YOUR CURRENT ACCOUNT BALANCE IS: "<<setprecision(2)<<fixed<<p->user.balance<<" PESOS."; gotoxy(32,12); system("pause");
+    gotoxy(32,14); cout<<"THANK YOU FOR BANKING WITH US"; gotoxy(32,15); system("pause");
     system("cls");
 }
 
@@ -529,11 +529,8 @@ void atmClass::deposit(){
     gotoxy(32,5); cout<<"PROCESSING "<<'\n'; loading_ani();
     gotoxy(32,7); cout<<"PLEASE ENTER ANY KEY"; getch();
     cout.imbue(comma_locale); gotoxy(32,9); cout<<"YOUR CURRENT BALANCE IS: "<<setprecision(2)<<fixed<<p->user.balance<<" PESOS.";
-    gotoxy(32,10); system("pause");
-    gotoxy(32,12); cout<<"THANK YOU FOR BANKING WITH US";
-    system("cls");
+    gotoxy(32,12); cout<<"THANK YOU FOR BANKING WITH US"; gotoxy(32,13); system("pause"); system("cls");
 }
-
 
 void atmClass::fund_transfer(){
 
@@ -558,8 +555,7 @@ void atmClass::fund_transfer(){
     gotoxy(32,5); cout<<__DATE__; gotoxy(72,5); cout<<__TIME__;
     gotoxy(52,8); SetColor(14); cout<<"FUND TRANSFER"; SetColor(15);
 
-    gotoxy(32,10); cout<<"Enter User Account Number: ";
-    cin>>accnum;
+    gotoxy(32,10); cout<<"Enter User Account Number: "; cin>>accnum;
     system("cls");
     gotoxy(32,5); cout<<"PROCESSING "<<'\n'; loading_ani();
     gotoxy(32,7); cout<<"PLEASE ENTER ANY KEY"; getch();
@@ -572,29 +568,28 @@ void atmClass::fund_transfer(){
     else{
         gotoxy(32,9);  cout<<"USER INFO";
         gotoxy(32,10);  cout<<"NAME: "<<receiver->user.name;
-        gotoxy(32,11);  cout<<"ACCOUNT NUMBER: "<<receiver->user.acc_number;
+        gotoxy(32,11);  cout<<"ACCOUNT NUMBER: "<<receiver->user.acc_number;}
 
-        while((fund%100)!=0 || fund>(p->user.balance-500)){
-            gotoxy(32,14); cout<<"Enter amount: "; cin>>fund;
-            if((fund%100)!=0){
-                gotoxy(32,16); cout<<"NOTE: THIS MACHINE ONLY ACCEPTS & DISPENSE 1000, 500, AND 100 PESOS"; gotoxy(32,17); system("cls");
-            }
-            else if(fund>(p->user.balance-500)){
-                gotoxy(32,16); cout<<"INSUFFICIENT BALANCE"; gotoxy(32,17); system("cls");
-            }
+    while((fund%100)!=0 || fund>(p->user.balance-500)){
+        gotoxy(32,14); cout<<"Enter amount: "; cin>>fund;
+        if((fund%100)!=0){
+            gotoxy(32,16); cout<<"NOTE: THIS MACHINE ONLY ACCEPTS & DISPENSE 1000, 500, AND 100 PESOS"; gotoxy(32,17); system("cls");
         }
+        else if(fund>(p->user.balance-500)){
+            gotoxy(32,16); cout<<"INSUFFICIENT BALANCE"; gotoxy(32,17); system("pause"); system("cls");
+        }
+    }
     gotoxy(32,17); cout<<"YOU ARE TRANSFERING "<<fund<<" PESOS TO "<<receiver->user.name;
-    gotoxy(32,18); cout<<"WITH AN ACCOUNT NUMBER OF"<<receiver->user.acc_number;
-    gotoxy(22,19); cout<<"DO YOU WANT TO PROCEED THE TRANSACTION? PLEASE ENTER ANY KEY TO PROCEED"; getch();
+    gotoxy(32,18); cout<<"WITH AN ACCOUNT NUMBER OF "<<receiver->user.acc_number;
+    gotoxy(22,19); cout<<"DO YOU WANT TO PROCEED THE TRANSACTION?"; getch();
+    gotoxy(22,20); cout<<"PLEASE ENTER ANY KEY TO PROCEED"; getch();
     p->user.balance -= fund;
     receiver->user.balance += fund;
-    gotoxy(22,20); cout<<"=================================================================";
-    gotoxy(32,22); cout<<"YOU SUCCESSFULLY TRANSFERED "<<fund<<" PESOS TO"<<receiver->user.acc_number;
-    gotoxy(32,23); cout<<"YOUR CURRENT BALANCE IS: "<<setprecision(2)<<fixed<<p->user.balance<<" PESOS.";
-    gotoxy(32,24); system("pause");
-    gotoxy(32,25); cout<<"THANK YOU FOR BANKING WITH US";
+    gotoxy(32,21); cout<<"=================================================";
+    gotoxy(32,22); cout<<"YOU SUCCESSFULLY TRANSFERED "<<fund<<" PESOS TO "<<receiver->user.acc_number;
+    gotoxy(32,23); cout.imbue(comma_locale); cout<<"YOUR CURRENT BALANCE IS: "<<setprecision(2)<<fixed<<p->user.balance<<" PESOS.";
+    gotoxy(32,24); cout<<"THANK YOU FOR BANKING WITH US"; gotoxy(32,25); system("pause");
     system("cls");
-    }
 }
 
 void atmClass::change_pincode(){
@@ -618,32 +613,40 @@ void atmClass::change_pincode(){
 
     system("cls");
     gotoxy(32,5); cout<<__DATE__; gotoxy(72,5); cout<<__TIME__;
-    gotoxy(52,8); SetColor(14); cout<<"FUND TRANSFER"; SetColor(15);
+    gotoxy(52,8); SetColor(14); cout<<"CHANGE PIN"; SetColor(15);
 
     gotoxy(32,10); cout<<"NAME: "<<p->user.name;
     gotoxy(32,11); cout<<"ACCOUNT NUMBER: "<<p->user.acc_number;
-    gotoxy(32,12); cout<<"ENTER NEW PIN: "; pincode();
-    newpin = pin;
-    while(newpin==pin){
-        gotoxy(32,15); SetColor(4); cout<<"YOUR NEW PIN CANNOT BE THE SAME AS YOUR CURRENT PIN"; SetColor(15); system("pause"); system("cls");
-        gotoxy(32,12); cout<<"ENTER NEW PIN: "; pincode();
 
-        gotoxy(32,13); cout<<"RE-ENTER PIN: "; pincode();
-        re_newpin = pin;
-        while(re_newpin!=pin){
-        gotoxy(32,15); SetColor(4); cout<<"ERROR: PIN DOES NOT MATCH"; SetColor(15);
-        }
+    while(input!=pin){
+    system("cls");
+    gotoxy(32,10); cout<<"ENTER PIN: ";
+    pincode();
+    input=pin;
+    retrieve_pin();
+    decrypt();
     }
-    if(re_newpin==pin){
+    gotoxy(32,12); cout<<"ENTER NEW PIN: "; pincode();
+    newpin = pin; retrieve_pin(); decrypt();
+    while(newpin==pin){
+        gotoxy(32,15); SetColor(4); cout<<"YOUR NEW PIN CANNOT BE THE SAME AS YOUR CURRENT PIN"; SetColor(15); gotoxy(32,16); system("pause"); system("cls");
+        gotoxy(32,12); cout<<"ENTER NEW PIN: "; pincode(); newpin = pin; retrieve_pin(); decrypt();
+    }
+    gotoxy(32,13); cout<<"RE-ENTER PIN: "; pincode(); re_newpin = pin; decrypt();
+    while(re_newpin!=newpin){
+        gotoxy(32,15); SetColor(4); cout<<"ERROR: PIN DOES NOT MATCH"; SetColor(15); gotoxy(32,16); system("pause"); system("cls");
+        gotoxy(32,13); cout<<"RE-ENTER PIN: "; pincode(); re_newpin = pin; decrypt();
+    }
+    encrypt();
+    if(newpin==re_newpin){
     encrypt(); saving_pin();
     system("cls");
     gotoxy(32,5); cout<<"PROCESSING "<<'\n'; loading_ani();
     gotoxy(32,8); cout<<"PLEASE ENTER ANY KEY"; getch();
     gotoxy(32,9); cout<<"PIN SUCCESSFULLY CHANGE!";
-    gotoxy(32,10); cout<<"THANK YOU FOR BANKING WITH US";
-    gotoxy(32,11); system("pause");
-    }
+    gotoxy(32,12); cout<<"THANK YOU FOR BANKING WITH US"; gotoxy(32,13); system("pause");
     system("cls");
+    }
 }
 
 void atmClass::locate(){
@@ -657,7 +660,15 @@ void atmClass::locate(){
 void atmClass::leave(){
 
     char ans;
+    SetColor(14); gotoxy(50,2);
+        cout<< R"(
+                         ____      _     _   _  _  __   ____  ____      _     ____
+                        | __ )    / \   | \ | || |/ /  / ___||  _ \    / \   |  _ \
+                        |  _ \   / _ \  |  \| || ' /  | |    | |_) |  / _ \  | |_) |
+                        | |_) | / ___ \ | |\  || . \  | |___ |  _ <  / ___ \ |  __/
+                        |____/ /_/   \_\|_| \_||_|\_\  \____||_| \_\/_/   \_\|_|
 
+    )"<<endl;SetColor(15);
     gotoxy(32,10); cout<<"DO YOU WANT TO DO ANOTHER TRANSACTION?";
     gotoxy(32,11); cout<<"IF YES PLEASE ENTER [Y] IF NO PRESS ANY KEY [N]";
     gotoxy(32,12); cout<<"Answer: "; cin>>ans;
