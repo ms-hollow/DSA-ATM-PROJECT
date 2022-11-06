@@ -289,11 +289,32 @@ void atmClass::removecard(){
 }
 
 void atmClass::saving_pin(){
-    fstream fp, fp2;
+    fstream fp;
     fp.open("D:\\pinrecord.txt",ios::out);
     fp<<accnum<<'\n';
     fp<<pin <<'\n';
     fp.close();
+}
+
+void atmClass::retrieve_pin(){
+    fstream fp;
+    fp.open("D:\\pinrecord.txt",ios::in);
+    while(!fp.eof()){
+        fp>>accnum;
+        fp>>pin;
+    }
+    fp.close();
+}
+
+void atmClass::save(){
+    p=n;
+    fstream datalist, fp2;
+    datalist.open("data.txt", ios::out);
+    while (p!=NULL){
+        datalist<<p->user.name<<'\n'<<p->user.acc_number<<'\n'<<p->user.balance<<'\n';
+        p=p->next;
+    }
+    datalist.close();
 
     fp2.open("D:\\userdata.txt",ios::out);
     fp2<<user.name<<endl;
@@ -303,40 +324,9 @@ void atmClass::saving_pin(){
     fp2.close();
 }
 
-void atmClass::retrieve_pin(){
-    fstream fp, fp2;
-    fp.open("D:\\pinrecord.txt",ios::in);
-    while(!fp.eof()){
-        fp>>accnum;
-        fp>>pin;
-    }
-    fp.close();
-
-    fp2.open("D:\\userdata.txt",ios::in);
-    while(!fp2.eof()){
-    fp2>>user.name;
-    fp2>>user.acc_number;
-    fp2>>user.birthday;
-    fp2>>user.contact_num;
-    }
-    fp2.close();
-}
-
-void atmClass::save(){
-    p=n;
-    fstream datalist;
-
-    datalist.open("data.txt", ios::out);
-    while (p!=NULL){
-        datalist<<p->user.name<<'\n'<<p->user.acc_number<<'\n'<<p->user.balance<<'\n';
-        p=p->next;
-    }
-    datalist.close();
-}
-
 void atmClass::retrieve(){
 
-    fstream datalist;
+    fstream datalist, fp2;
 
     datalist.open("data.txt",ios::in);
     if(!datalist){
@@ -356,6 +346,14 @@ void atmClass::retrieve(){
         }
         datalist.close();
     }
+    fp2.open("D:\\userdata.txt",ios::in);
+    while(!fp2.eof()){
+    fp2>>user.name;
+    fp2>>user.acc_number;
+    fp2>>user.birthday;
+    fp2>>user.contact_num;
+    }
+    fp2.close();
 }
 
 void atmClass::pincode(){
@@ -645,12 +643,7 @@ void atmClass::change_pincode(){
     gotoxy(32,9); cout<<"PIN SUCCESSFULLY CHANGE!";
     gotoxy(32,10); cout<<"ACCOUNT INFORMATION";
     gotoxy(32,11); cout<<"=========================";
-    gotoxy(32,12); cout<<"ACCOUNT NUMBER: "<<user.acc_number;
-    gotoxy(32,13); cout<<"NAME: "<<user.name;
-    gotoxy(32,14); cout<<"BIRTHDAY: "<<user.birthday;
-    gotoxy(32,15); cout<<"CONTACT NUMBER: "<<user.contact_num;
-    gotoxy(32,16); cout.imbue(comma_locale);cout<<"ACCOUNT BALANCE: "<<setprecision(2)<<fixed<<user.balance<<" pesos";
-    gotoxy(32,17); cout<<"THANK YOU FOR BANKING WITH US"; gotoxy(32,13); system("pause");
+    gotoxy(32,17); cout<<"THANK YOU FOR BANKING WITH US"; gotoxy(32,18); system("pause");
     encrypt(); saving_pin();
     system("cls");
     }
