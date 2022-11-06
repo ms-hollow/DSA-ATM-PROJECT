@@ -249,7 +249,7 @@ void atmClass::insertcard(){
 
             system("cls");
             gotoxy(40,6); cout<<"ACCOUNT IS NOW REGISTERED";
-            gotoxy(40,7); cout<<"=========================\n";
+            gotoxy(40,7); cout<<"=========================";
             gotoxy(40,8); cout<<"ACCOUNT NUMBER: "<<user.acc_number;
             gotoxy(40,9); cout<<"NAME: "<<user.name;
             gotoxy(40,10); cout<<"BIRTHDAY: "<<user.birthday;
@@ -570,7 +570,7 @@ void atmClass::fund_transfer(){
     locate();
 
     if (receiver==NULL){
-        gotoxy(32,8); cout<<"USER ACCOUNT NOT FOUND."; gotoxy(32,9); system("pause");
+        gotoxy(32,8); cout<<"USER ACCOUNT NOT FOUND."; gotoxy(32,9); system("pause"); system("cls");
     }
 
     else{
@@ -598,7 +598,7 @@ void atmClass::fund_transfer(){
     gotoxy(32,24); system("pause");
     gotoxy(32,25); cout<<"THANK YOU FOR BANKING WITH US";
     system("cls");
-        }
+    }
 }
 
 void atmClass::change_pincode(){
@@ -620,21 +620,28 @@ void atmClass::change_pincode(){
     decrypt();
     }
 
-    cout<<"\nNAME: "<<p->user.name;
-    cout<<"\nACCOUNT NUMBER: "<<p->user.acc_number;
+    system("cls");
+    gotoxy(32,5); cout<<__DATE__; gotoxy(72,5); cout<<__TIME__;
+    gotoxy(52,8); SetColor(14); cout<<"FUND TRANSFER"; SetColor(15);
 
-    cout<<"\nENTER NEW PIN: "; pincode();
+    gotoxy(32,10); cout<<"NAME: "<<p->user.name;
+    gotoxy(32,11); cout<<"ACCOUNT NUMBER: "<<p->user.acc_number;
+
+    gotoxy(32,12); cout<<"ENTER NEW PIN: "; pincode();
     newpin = pin;
-    cout<<"\nRE-ENTER PIN: "; pincode();
+    gotoxy(32,13); cout<<"RE-ENTER PIN: "; pincode();
     retrieve_pin(); decrypt();
     while(newpin!=pin){
-        system("cls");
-        cout<<"\nPIN DOES NOT MATCH";
-        cout<<"\nRE-ENTER PIN: "; pincode();
+        gotoxy(32,15); SetColor(4); cout<<"ERROR: PIN DOES NOT MATCH"; SetColor(15);
+        gotoxy(32,16); cout<<"RE-ENTER PIN: "; pincode();
     }
     encrypt(); saving_pin();
-    cout<<"\nPIN SUCCESSFULLY CHANGE!";
-    system("pause");
+    system("cls");
+    gotoxy(32,5); cout<<"PROCESSING "<<'\n'; loading_ani();
+    gotoxy(32,8); cout<<"PLEASE ENTER ANY KEY"; getch();
+    gotoxy(32,9); cout<<"PIN SUCCESSFULLY CHANGE!";
+    gotoxy(32,10); cout<<"THANK YOU FOR BANKING WITH US";
+    gotoxy(32,11); system("pause");
 }
 
 void atmClass::locate(){
@@ -649,10 +656,10 @@ void atmClass::leave(){
 
     char ans;
 
-    gotoxy(33,13); cout<<"DO YOU WANT TO DO ANOTHER TRANSACTION?";
-    gotoxy(33,14); cout<<"IF YES PLEASE ENTER [Y] IF NO PRESS ANY KEY [N]";
-    gotoxy(33,15); cout<<"Answer: "; cin>>ans;
-    gotoxy(33,16); system("pause");
+    gotoxy(32,10); cout<<"DO YOU WANT TO DO ANOTHER TRANSACTION?";
+    gotoxy(32,11); cout<<"IF YES PLEASE ENTER [Y] IF NO PRESS ANY KEY [N]";
+    gotoxy(32,12); cout<<"Answer: "; cin>>ans;
+    gotoxy(32,13); system("pause");
     if(ans=='Y' || ans=='y'){
         return;
     }
@@ -716,4 +723,4 @@ void loading_ani(){
     SetColor(15);
 }
 
-
+//HELLO
