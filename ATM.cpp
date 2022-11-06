@@ -82,6 +82,7 @@ int main(){
 
     atmClass ATM;
     ATM.makenull();
+    //ATM.insertcard();
     ATM.retrieve();
     ATM.insertcard();
 
@@ -208,16 +209,16 @@ void atmClass::add(INFO user){
 void atmClass::insertcard(){
 
     fstream fp;
-    string input, checker;
+    string checker;
     int ch, amount;
-    setFontStyle(23);
-    do{
-        system("cls");
-        gotoxy(41,6); SetColor(4); cout<<"PLEASE INSERT CARD"; SetColor(15);
-        fp.open("D:\\pinrecord.txt", ios::in);
-    }while(!fp);
 
-    system("cls");
+    setFontStyle(23);
+
+    while(!fp){
+        gotoxy(41,6); SetColor(4); cout<<"PLEASE INSERT CARD"; SetColor(15);
+        system("pause");
+        fp.open("D:\\pinrecord.txt", ios::in);
+    }
 
     getline(fp,checker);
     srand(time(NULL));
@@ -229,7 +230,6 @@ void atmClass::insertcard(){
         gotoxy(36,8); cout<<"[1] REGISTER";gotoxy(36,9);cout<<"[2] EXIT";
         gotoxy(36,10); cout<<"PLEASE SELECT YOUR NUMBER OF CHOICE: ";
         cin>>ch;
-
 
     switch (ch){
     case 1: system("cls");
@@ -277,8 +277,9 @@ void atmClass::insertcard(){
 
 void atmClass::removecard(){
     fstream fp;
+
     do{ system("cls");
-        gotoxy(41,6); SetColor(4); cout <<"PLEASE REMOVE CARD"; SetColor(15);
+        gotoxy(41,6); SetColor(4); cout <<"PLEASE REMOVE CARD"; SetColor(15); system("pause");
         fp.open("D:\\pinrecord.txt",ios::out);
     }while(fp);
     SetColor(14); gotoxy(50,2);
@@ -290,7 +291,7 @@ void atmClass::removecard(){
                         |____/ /_/   \_\|_| \_||_|\_\  \____||_| \_\/_/   \_\|_|
 
         )"<<endl;SetColor(15);
-    gotoxy(40,10); cout <<"Thank you for banking with us! See you in future transactions!";
+    gotoxy(24,10); cout <<"Thank you for banking with us! See you in future transactions!";
     exit(0);
 }
 
@@ -361,6 +362,8 @@ void atmClass::retrieve(){
     }
     fp2.close();
 }
+
+
 
 void atmClass::pincode(){
     int index =0;
@@ -584,9 +587,9 @@ void atmClass::fund_transfer(){
         }
     }
     gotoxy(32,17); cout<<"YOU ARE TRANSFERING "<<fund<<" PESOS TO "<<receiver->user.name;
-    gotoxy(32,18); cout<<"WITH AN ACCOUNT NUMBER OF "<<receiver->user.acc_number;
-    gotoxy(22,19); cout<<"DO YOU WANT TO PROCEED THE TRANSACTION?"; getch();
-    gotoxy(22,20); cout<<"PLEASE ENTER ANY KEY TO PROCEED"; getch();
+    gotoxy(32,18); cout.imbue(comma_locale); cout<<"WITH AN ACCOUNT NUMBER OF "<<receiver->user.acc_number;
+    gotoxy(32,19); cout<<"DO YOU WANT TO PROCEED THE TRANSACTION?"; getch();
+    gotoxy(32,20); cout<<"PLEASE ENTER ANY KEY TO PROCEED"; getch();
     p->user.balance -= fund;
     receiver->user.balance += fund;
     gotoxy(32,21); cout<<"=================================================";
