@@ -48,6 +48,8 @@ class atmClass{
         void reg_acc();
         void save();
         void retrieve();
+        void svuserdata();
+        void reuserdata();
         void saving_pin();
         void retrieve_pin();
         void balance_inquiry();
@@ -82,7 +84,6 @@ int main(){
 
     atmClass ATM;
     ATM.makenull();
-    //ATM.insertcard();
     ATM.retrieve();
     ATM.insertcard();
 
@@ -214,11 +215,10 @@ void atmClass::insertcard(){
 
     setFontStyle(23);
 
-    while(!fp){
+    do{ system("cls");
         gotoxy(41,6); SetColor(4); cout<<"PLEASE INSERT CARD"; SetColor(15);
-        system("pause");
         fp.open("D:\\pinrecord.txt", ios::in);
-    }
+    }while(!fp);
 
     getline(fp,checker);
     srand(time(NULL));
@@ -257,7 +257,7 @@ void atmClass::insertcard(){
             gotoxy(40,14); cout<<"BIRTHDAY: "<<user.birthday;
             gotoxy(40,15); cout<<"CONTACT NUMBER: "<<user.contact_num;
             gotoxy(40,16); cout.imbue(comma_locale);cout<<"ACCOUNT BALANCE: "<<setprecision(2)<<fixed<<user.balance<<" pesos";
-            encrypt(); saving_pin(); add(user); save(); gotoxy(40,17); system("pause"); break;
+            encrypt(); svuserdata(); saving_pin(); add(user); save(); gotoxy(40,17); system("pause"); break;
     case 2: removecard(); exit(0); break; }
     }
     else{
@@ -315,14 +315,18 @@ void atmClass::retrieve_pin(){
 
 void atmClass::save(){
     p=n;
-    fstream datalist, fp2;
+    fstream datalist;
     datalist.open("data.txt", ios::out);
     while (p!=NULL){
         datalist<<p->user.name<<'\n'<<p->user.acc_number<<'\n'<<p->user.balance<<'\n';
         p=p->next;
     }
     datalist.close();
+}
 
+void atmClass::svuserdata(){
+
+    fstream fp2;
     fp2.open("D:\\userdata.txt",ios::out);
     fp2<<user.name<<endl;
     fp2<<user.acc_number<<'\n';
@@ -331,9 +335,22 @@ void atmClass::save(){
     fp2.close();
 }
 
+void atmClass::reuserdata(){
+
+    fstream fp2;
+    fp2.open("D:\\userdata.txt",ios::in);
+    while(!fp2.eof()){
+    fp2>>user.name;
+    fp2>>user.acc_number;
+    fp2>>user.birthday;
+    fp2>>user.contact_num;
+    }
+    fp2.close();
+}
+
 void atmClass::retrieve(){
 
-    fstream datalist, fp2;
+    fstream datalist;
 
     datalist.open("data.txt",ios::in);
     if(!datalist){
@@ -353,14 +370,6 @@ void atmClass::retrieve(){
         }
         datalist.close();
     }
-    fp2.open("D:\\userdata.txt",ios::in);
-    while(!fp2.eof()){
-    fp2>>user.name;
-    fp2>>user.acc_number;
-    fp2>>user.birthday;
-    fp2>>user.contact_num;
-    }
-    fp2.close();
 }
 
 
